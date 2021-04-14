@@ -1,0 +1,13 @@
+:root {
+	--main: hsl(197, 100%, 35%);
+	--active: hsl(197, 100%, 25%);
+}
+
+a {
+	display: block;
+	font-size: larger;
+	color: var(--main);
+	font-weight: bold;
+	text-align: center;
+	font-family: sans-serif;
+}
