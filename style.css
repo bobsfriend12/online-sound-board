@@ -1,0 +1,29 @@
+:root {
+	--main: hsl(197, 100%, 35%);
+	--active: hsl(197, 100%, 25%);
+}
+
+.board-container {
+	padding: 1em;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(100px, auto));
+	gap: 1em;
+}
+
+a {
+	display: block;
+}
+
+.fx-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	padding: 1em 0.5em;
+	color: white;
+	background: var(--main);
+}
+
+.playing {
+	background: var(--active);
+}
