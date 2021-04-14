@@ -42,6 +42,7 @@ for (let i = 0; i < audios.length; i++) {
 	aud.addEventListener("ended", () => {
 		const aud = audios[i];
 		const id = $(".fx-btn")[i].id;
+		const selId = $(`#${id}`);
 
 		//remove the playing class
 		selId.removeClass("playing");
