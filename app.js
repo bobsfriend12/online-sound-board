@@ -2,6 +2,8 @@
 const ids = $(".fx-btn").get();
 const audios = $("audio").get();
 
+sessionStorage.setItem("randomAudTarget", "null");
+
 //loop through each of the buttons
 for (let i = 0; i < ids.length; i++) {
 	const id = $(".fx-btn")[i].id;
@@ -12,12 +14,19 @@ for (let i = 0; i < ids.length; i++) {
 
 $(".board-container").on("click", e => {
 	let target = e.target.id;
+	let audTarget;
 
 	if (target === "random") {
-		const ran = Math.floor(Math.random() * 27);
-		let audTarget = ids[ran].id;
+		if (sessionStorage.getItem("randomAudTarget") != "null") {
+			audTarget = sessionStorage.getItem("randomAudTarget");
+			sessionStorage.setItem("randomAudTarget", "null");
+		} else {
+			const ran = Math.floor(Math.random() * 27);
+			audTarget = ids[ran].id;
+			sessionStorage.setItem("randomAudTarget", audTarget);
+		}
 	} else {
-		let audTarget = target;
+		audTarget = target;
 	}
 
 	const audio = document.getElementById(`${audTarget}Audio`);
@@ -48,10 +57,28 @@ for (let i = 0; i < audios.length; i++) {
 	const aud = audios[i];
 
 	aud.addEventListener("ended", () => {
-		const aud = audios[i];
-		const audId = aud.id;
-		const id = audId.slice(0, -5);
-		const selId = $(`#${id}`);
+		let aud = audios[i];
+		let audId = aud.id;
+		let id = audId.slice(0, -5);
+		let ranStor = sessionStorage.getItem("randomAudTarget");
+		let selId = $(`#${id}`);
+		let btnId = id;
+
+		if (id === ranStor) {
+			btnId = "random";
+			aud = document.getElementById(`${ranStor}Audio`);
+			audId = `${ranStor}Audio`;
+			id = ranStor;
+			selId = $("#random");
+
+			sessionStorage.setItem("randomAudTarget", "null");
+		}
+
+		console.log(aud);
+		console.log(audId);
+		console.log(id);
+
+		console.log(selId);
 
 		//remove the playing class
 		selId.removeClass("playing");
@@ -61,6 +88,6 @@ for (let i = 0; i < audios.length; i++) {
 		//reset it at the beginning
 		aud.currentTime = 0;
 		//set IsPlaying to false
-		sessionStorage.setItem(`${id}IsPlaying`, "false");
+		sessionStorage.setItem(`${btnId}IsPlaying`, "false");
 	});
 }
