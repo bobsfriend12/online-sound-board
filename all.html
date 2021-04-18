@@ -6,6 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>The Radio Play Disaster Sound Effects</title>
 		<link rel="stylesheet" href="style.css" />
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	</head>
 	<body>
 		<div class="board-container">
@@ -56,6 +57,7 @@
 			<a href="javascript:void(0)" class="fx-btn" id="chopsticks"
 				>Chopsticks</a
 			>
+			<a href="javascript:void(0)" class="fx-btn" id="turkey">Turkey</a>
 			<a href="javascript:void(0)" class="fx-btn" id="thunder">Thunder</a>
 			<a href="javascript:void(0)" class="fx-btn" id="tapshoes"
 				>Tap Shoes</a
@@ -104,7 +106,7 @@
 			<audio id="heatLaserAudio" src="audio/heatLaser.mp3"></audio>
 			<audio
 				id="twinkleTwinkleAudio"
-				src="audio/FIXME_TWINKLE.mp3"
+				src="audio/twinkleTwinkle.mp3"
 			></audio>
 			<audio src="audio/breakingNews.mp3" id="breakingNewsAudio"></audio>
 			<audio src="audio/breakingNews.mp3" id="odeToJoyAudio"></audio>
@@ -112,13 +114,16 @@
 			<audio src="audio/chicken.mp3" id="chickenAudio"></audio>
 			<audio src="audio/jungleSounds.mp3" id="jungleAnimalsAudio"></audio>
 			<audio src="audio/animalDying.mp3" id="animalDyingAudio"></audio>
-			<audio src="audio/breakingNews.mp3" id="animalsWakingAudio"></audio>
+			<audio
+				src="audio/animalsWaking.mp3"
+				id="animalsWakingAudio"
+			></audio>
 			<audio src="audio/seagulls.mp3" id="seagullsAudio"></audio>
 			<audio
 				src="audio/wildScreeches.mp3"
 				id="wildScreechesAudio"
 			></audio>
-			<audio src="audio/breakingNews.mp3" id="roarAudio"></audio>
+			<audio src="audio/roar.mp3" id="roarAudio"></audio>
 			<audio src="audio/parrot.mp3" id="parrotAudio"></audio>
 			<audio src="audio/bicycleBell.mp3" id="bikeBellAudio"></audio>
 			<audio src="audio/highHeels.mp3" id="highHeelsAudio"></audio>
@@ -127,8 +132,9 @@
 				src="audio/violentSounds.mp3"
 				id="violentSoundsAudio"
 			></audio>
-			<audio src="audio/breakingNews.mp3" id="chopsticksAudio"></audio>
-			<audio src="audio/breakingNews.mp3" id="thunderAudio"></audio>
+			<audio src="audio/chopsticks.mp3" id="chopsticksAudio"></audio>
+			<audio src="audio/turkey.mp3" id="turkeyAudio"></audio>
+			<audio src="audio/thunder.mp3" id="thunderAudio"></audio>
 			<audio src="audio/tapShoes.mp3" id="tapshoesAudio"></audio>
 			<audio src="audio/breakingNews.mp3" id="stompingAudio"></audio>
 			<audio src="audio/lasers.mp3" id="lasersAudio"></audio>
@@ -137,7 +143,10 @@
 				src="audio/jinglingBells.mp3"
 				id="jinglingBellsAudio"
 			></audio>
-			<audio src="audio/breakingNews.mp3" id="faintScreamsAudio"></audio>
+			<audio
+				src="audio/distantScreams.mp3"
+				id="faintScreamsAudio"
+			></audio>
 			<audio src="audio/hatchOpening.mp3" id="hatchOpeningAudio"></audio>
 			<audio
 				src="audio/breakingGlass.mp3"
@@ -158,7 +167,6 @@
 			<audio src="audio/distantSirens.mp3" id="distantSirenAudio"></audio>
 		</div>
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<script src="app.js"></script>
 	</body>
 </html>
