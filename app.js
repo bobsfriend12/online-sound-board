@@ -35,6 +35,8 @@ $(".board-container").on("click", e => {
 
 	if (target === "faintScreams") {
 		audio.volume = 0.115;
+	} else if (target === "static") {
+		audio.volume = 0.5;
 	}
 
 	//if its not playing, play it
