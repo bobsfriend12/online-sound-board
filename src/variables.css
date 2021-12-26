@@ -1,0 +1,16 @@
+:root {
+	/* Colors */
+	--brand-color: hsl(353, 100%, 35%);
+	--brand-color-light: hsl(353, 100%, 55%);
+	--brand-color-lighter: hsl(353, 100%, 75%);
+
+	--bg-white: hsl(0, 0%, 100%);
+	--bg-black: hsl(0, 0%, 0%);
+
+	--text-white: hsl(0, 0%, 100%);
+	--text-black: hsl(0, 0%, 0%);
+
+	/* Fonts */
+	--heading-font: "Merriweather Sans", sans-serif;
+	--paragraph-font: "Open Sans", sans-serif;
+}

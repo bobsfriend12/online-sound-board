@@ -1,0 +1,14 @@
+.dashboard {
+	padding: 0.5em 0 0 0;
+}
+
+.dashboard__top,
+.dashboard__right {
+	display: flex;
+}
+
+.dashboard__right {
+	margin-left: auto;
+	margin-right: 1em;
+	gap: 1em;
+}
