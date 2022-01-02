@@ -1,0 +1,28 @@
+.edit {
+	padding: 0.5em 0 0 0;
+}
+
+.edit__top,
+.edit__right,
+.edit__edit_sounds_top {
+	display: flex;
+}
+
+.edit__right {
+	margin-left: auto;
+	margin-right: 1em;
+	gap: 1em;
+}
+
+.edit__link {
+	color: var(--text-dark-bg);
+	text-decoration: none;
+}
+
+.edit__edit_title_wrapper {
+	margin: 0.5em 0;
+}
+
+.edit__edit_title {
+	margin-left: 0.5em;
+}

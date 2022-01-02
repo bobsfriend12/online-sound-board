@@ -12,3 +12,8 @@
 	margin-right: 1em;
 	gap: 1em;
 }
+
+.dashboard__link {
+	color: var(--text-dark-bg);
+	text-decoration: none;
+}

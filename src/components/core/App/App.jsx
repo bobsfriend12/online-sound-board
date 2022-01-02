@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import BaseLayout from "../BaseLayout/BaseLayout";
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
+//TODO: get results from db
 const dbResults = {
 	status: "success",
 	numOfBoards: 3,
@@ -91,11 +92,16 @@ const dbResults = {
 		}
 	]
 };
+
+const editBoard = (newBoard) => {
+	console.log("UPDATE BOARD: ", newBoard);
+	dbResults.boards[newBoard.index] = newBoard;
+};
 const boards = dbResults.boards;
 
 function App() {
 	return (
-		<DatabaseContext.Provider value={dbResults}>
+		<DatabaseContext.Provider value={{ dbResults, editBoard }}>
 			<BrowserRouter>
 				<Routes>
 					<Route path="*" element={<BaseLayout page="notFound" />} />
@@ -134,7 +140,7 @@ function App() {
 						element={<BaseLayout page="edit" />}
 					/>
 					<Route
-						path="/edit/sound/:boardId"
+						path="/edit/:boardId/:soundId"
 						element={<BaseLayout page="edit" />}
 					/>
 				</Routes>

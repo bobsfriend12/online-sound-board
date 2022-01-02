@@ -8,7 +8,10 @@ import Btn from "../../blocks/Btn/Btn";
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
 function Sidebar() {
-	const boards = useContext(DatabaseContext).boards;
+	const context = useContext(DatabaseContext);
+	const { dbResults } = context;
+	const boards = dbResults.boards;
+	console.log(boards);
 	const { boardId } = useParams();
 	return (
 		<div className="sidebar">

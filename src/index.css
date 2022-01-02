@@ -28,7 +28,8 @@ h4 {
 }
 
 p,
-a {
+a,
+li {
 	font-family: var(--paragraph-font);
 }
 

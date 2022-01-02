@@ -1,28 +1,119 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useParams } from "react-router-dom";
+import { reactFormatter, ReactTabulator } from "react-tabulator";
 
 import "./Table.css";
 import "react-tabulator/lib/styles.css";
-import "react-tabulator/css/materialize/tabulator_materialize.min.css";
+import "./materialize.css";
 
 import DatabaseContext from "../../../contexts/DatabaseContext";
-import { ReactTabulator } from "react-tabulator";
+import Btn from "../Btn/Btn";
+import Modal from "../Modal/Modal";
 
-function Table() {
-	const dbResults = useContext(DatabaseContext);
+function Table({ edit, setRows, sounds, setSounds }) {
+	const { dbResults } = useContext(DatabaseContext);
 	const { boardId } = useParams();
 	const currBoard = dbResults.boards.find((o) => o.id === boardId);
-	const sounds = currBoard.sounds;
 
-	const columns = [
-		{ title: "ID", field: "id" },
-		{ title: "Name", field: "name" },
-		{ title: "Audio File", field: "audioFile" },
-		{ title: "Duration", field: "duration" }
-	];
+	const [showEdit, setShowEdit] = useState(false);
+	const [sound, setSound] = useState({});
 
+	function onDelete() {
+		//After we delete 1 sound the index property in the sound
+		//object is no longer correct. This mean we have to find
+		//its real index in the sounds array.
+		let soundsCopy = sounds;
+		const index = sounds.findIndex((o) => o.id === sound.id);
+		soundsCopy.splice(index, 1);
+		setSounds(soundsCopy);
+		setShowEdit(false);
+	}
+
+	function onEditSave(newSoundObj) {
+		let soundsCopy = sounds;
+		soundsCopy[sounds.findIndex((o) => o.id === newSoundObj.id)] =
+			newSoundObj;
+		setSounds(soundsCopy);
+		console.log(sounds);
+		setShowEdit(false);
+	}
+
+	//#region
+	function EditBtn(props) {
+		const id = props.cell._cell.row.data.id;
+		return (
+			<Btn
+				content="Edit"
+				onClick={() => {
+					setSound(props.cell._cell.row.data);
+					setShowEdit(true);
+				}}
+			/>
+		);
+	}
+
+	let columns;
+	if (edit) {
+		columns = [
+			{ title: "ID", field: "id", headerSort: false },
+			{ title: "Name", field: "name", headerSort: false },
+			{ title: "Audio File", field: "audioFile", headerSort: false },
+			{ title: "Duration", field: "duration", headerSort: false },
+			{
+				title: "",
+				field: "",
+				formatter: reactFormatter(<EditBtn />),
+				headerSort: false
+			}
+		];
+	} else {
+		columns = [
+			{ title: "ID", field: "id", headerSort: false },
+			{ title: "Name", field: "name", headerSort: false },
+			{ title: "Audio File", field: "audioFile", headerSort: false },
+			{ title: "Duration", field: "duration", headerSort: false }
+		];
+	}
+	let options;
+	if (edit) {
+		options = {
+			invalidOptionWarnings: false,
+			debugInvalidOptions: false,
+			movableRows: true
+		};
+	} else {
+		options = {
+			invalidOptionWarnings: false,
+			debugInvalidOptions: false
+		};
+	}
+	let ref;
+	//#endregion
 	return (
-		<ReactTabulator data={sounds} columns={columns} layout={"fitData"} />
+		<>
+			<ReactTabulator
+				ref={(r) => {
+					ref = r;
+					console.log(r);
+					let hi;
+					setRows !== undefined && r !== null
+						? setRows(r)
+						: (hi = null);
+				}}
+				data={sounds}
+				columns={columns}
+				layout={"fitColumns"}
+				options={options}
+			/>
+			<Modal
+				type="editSound"
+				sound={sound}
+				show={showEdit}
+				onClose={() => setShowEdit(false)}
+				onSave={onEditSave}
+				onDelete={() => onDelete()}
+			/>
+		</>
 	);
 }
 

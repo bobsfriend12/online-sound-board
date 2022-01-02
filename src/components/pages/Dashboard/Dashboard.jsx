@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 import "./Dashboard.css";
 
@@ -12,11 +13,20 @@ function ViewBoard({ board }) {
 				<h1 className="dashboard__title">{board.title}</h1>
 				<div className="dashboard__right">
 					<Btn content="Launch" />
-					<Btn content="Edit" />
+					<Btn
+						content={
+							<Link
+								className="dashboard__link"
+								to={"/edit/" + board.id}
+							>
+								Edit
+							</Link>
+						}
+					/>
 				</div>
 			</div>
 			<div className="dashboard__bottom">
-				<Table />
+				<Table sounds={board.sounds} />
 			</div>
 		</div>
 	);
