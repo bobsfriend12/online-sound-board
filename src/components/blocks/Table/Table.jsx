@@ -1,20 +1,14 @@
-import React, { useContext, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import { reactFormatter, ReactTabulator } from "react-tabulator";
 
 import "./Table.css";
 import "react-tabulator/lib/styles.css";
 import "./materialize.css";
 
-import DatabaseContext from "../../../contexts/DatabaseContext";
 import Btn from "../Btn/Btn";
 import Modal from "../Modal/Modal";
 
 function Table({ edit, setRows, sounds, setSounds }) {
-	const { dbResults } = useContext(DatabaseContext);
-	const { boardId } = useParams();
-	const currBoard = dbResults.boards.find((o) => o.id === boardId);
-
 	const [showEdit, setShowEdit] = useState(false);
 	const [sound, setSound] = useState({});
 
@@ -40,7 +34,6 @@ function Table({ edit, setRows, sounds, setSounds }) {
 
 	//#region
 	function EditBtn(props) {
-		const id = props.cell._cell.row.data.id;
 		return (
 			<Btn
 				content="Edit"
@@ -98,7 +91,7 @@ function Table({ edit, setRows, sounds, setSounds }) {
 					let hi;
 					setRows !== undefined && r !== null
 						? setRows(r)
-						: (hi = null);
+						: (hi = ref);
 				}}
 				data={sounds}
 				columns={columns}

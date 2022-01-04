@@ -1,8 +1,8 @@
 import React from "react";
 
-import Btn from "../Btn/Btn";
 import EditSound from "./types/EditSound";
 import NewSound from "./types/NewSound";
+import NewBoard from "./types/NewBoard";
 
 import "./Modal.css";
 
@@ -12,8 +12,7 @@ function Modal({ type, sound, show, onClose, onSave, onDelete }) {
 	}
 
 	if (type === "newBoard") {
-		console.log("Modal type is newBoard");
-		return null;
+		return <NewBoard onClose={onClose} onSave={onSave} />;
 	} else if (type === "newSound") {
 		return <NewSound onClose={onClose} onSave={onSave} />;
 	} else if (type === "editSound") {

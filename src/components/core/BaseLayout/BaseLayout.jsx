@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 
 import "./BaseLayout.css";
 
@@ -46,6 +46,8 @@ function BaseLayout({ page, ...props }) {
 	//Get the boardId from the URL
 	const { boardId } = useParams();
 
+	let navigate = useNavigate();
+
 	//Get the current board using the boardId
 	let currBoard;
 	if (boardId === undefined) {
@@ -56,6 +58,13 @@ function BaseLayout({ page, ...props }) {
 				currBoard = boards[i];
 			}
 		}
+	}
+
+	//If the boardId in the URL doesn't match one in the db
+	//then redirect back to the dashboard
+	if (currBoard === undefined) {
+		console.log("Undefined board, redirect to dashboard");
+		return <Navigate to="/dashboard" />;
 	}
 	//Render the current board into the page
 	if (page === "main") {

@@ -7,7 +7,6 @@ import "react-tabulator/lib/styles.css";
 import "../../blocks/Table/materialize.css";
 
 import Btn from "../../blocks/Btn/Btn";
-import Table from "../../blocks/Table/Table";
 import Modal from "../../blocks/Modal/Modal";
 
 import DatabaseContext from "../../../contexts/DatabaseContext";
@@ -99,7 +98,11 @@ function EditBoard({ board }) {
 		let newBoard = {
 			index: board.index
 		};
-		newBoard.id = title.replace(/ +/g, "-").toLowerCase();
+		//See sidebar comp for details on this
+		newBoard.id = title
+			.replace(/[^a-zA-Z0-9 ]/g, "")
+			.replace(/ +/g, "-")
+			.toLowerCase();
 		newBoard.title = title;
 		// newBoard.sounds = board.sounds;
 		const currSounds = r.table.getData();

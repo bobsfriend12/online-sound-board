@@ -1,18 +1,31 @@
-import React, { useContext } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 import "./Sidebar.css";
 
 import Btn from "../../blocks/Btn/Btn";
+import Modal from "../../blocks/Modal/Modal";
 
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
 function Sidebar() {
+	const [show, setShow] = useState(false);
 	const context = useContext(DatabaseContext);
-	const { dbResults } = context;
+	const { dbResults, editBoard } = context;
 	const boards = dbResults.boards;
 	console.log(boards);
 	const { boardId } = useParams();
+
+	let navigate = useNavigate();
+
+	function onSave(newBoardObj) {
+		newBoardObj.index = boards.length;
+
+		setShow(false);
+		editBoard(newBoardObj);
+		navigate(`/dashboard/${newBoardObj.id}`);
+	}
+
 	return (
 		<div className="sidebar">
 			<div className="sidebar__top">
@@ -38,8 +51,18 @@ function Sidebar() {
 				</ul>
 			</div>
 			<div className="sidebar__bottom">
-				<Btn content="Add Board" extraClasses="sidebar__btn" />
+				<Btn
+					content="Add Board"
+					extraClasses="sidebar__btn"
+					onClick={() => setShow(true)}
+				/>
 			</div>
+			<Modal
+				type="newBoard"
+				show={show}
+				onClose={() => setShow(false)}
+				onSave={onSave}
+			/>
 		</div>
 	);
 }

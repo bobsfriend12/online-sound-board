@@ -9,7 +9,11 @@ function NewSound({ sound, onClose, onSave }) {
 
 	function handleSave() {
 		let newSoundObj = {};
-		const id = title.replace(/ +/g, "-").toLowerCase();
+		//See sidebar comp for details on this
+		const id = title
+			.replace(/[^a-zA-Z0-9 ]/g, "")
+			.replace(/ +/g, "-")
+			.toLowerCase();
 		newSoundObj.id = id;
 		newSoundObj.name = title;
 		newSoundObj.audioFile = audioName;
