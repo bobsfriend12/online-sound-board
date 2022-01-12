@@ -1,3 +1,4 @@
+const log4js = require("log4js")
 const dotenv = require("dotenv");
 dotenv.config();
 const port = process.env.PORT;
@@ -8,6 +9,21 @@ const path = require("path");
 
 const express = require("express");
 const app = express();
+
+log4js.configure({
+	appenders: { 
+		file: { type: "dateFile", filename: "logs/app.log", layout: {type: "basic"}, compress: true, daysToKeep: 14, keepFileExt: true },
+		console: {type: "console"} },
+	categories: { info: { appenders: ["file", "console"], level: "info" } }
+  });
+   
+  const logger = log4js.getLogger("cheese");
+  logger.trace("Entering cheese testing");
+  logger.debug("Got cheese.");
+  logger.info("Cheese is Comté.");
+  logger.warn("Cheese is quite smelly.");
+  logger.error("Cheese is too ripe!");
+  logger.fatal("Cheese was breeding ground for listeria.");
 
 const NodeCouchDb = require("node-couchdb");
 
