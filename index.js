@@ -27,6 +27,7 @@ app.use("/file", express.static(path.join(__dirname, "static/audio")));
 
 //Get object
 app.get("/boards", (req, res) => {
+	console.log("Recieved request from " + req.ip);
 	couch.get(dbName, viewURL).then(({data, headers, status}) => {
 		const boards = {
 			status: "success"
@@ -42,7 +43,7 @@ app.get("/boards", (req, res) => {
 			error: err
 		}
 		console.error("Error getting boards" + err);
-		res.send(err);
+		res.send(boards);
 	});
 });
 
