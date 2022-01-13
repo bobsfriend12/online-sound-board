@@ -4,6 +4,7 @@ dotenv.config();
 const port = process.env.PORT;
 const dbUser = process.env.DB_USER;
 const dbPwd = process.env.DB_PASSWORD;
+const logLevel = process.env.LOG_LEVEL;
 
 const path = require("path");
 
@@ -14,16 +15,10 @@ log4js.configure({
 	appenders: { 
 		file: { type: "dateFile", filename: "logs/app.log", layout: {type: "basic"}, compress: true, daysToKeep: 14, keepFileExt: true },
 		console: {type: "console"} },
-	categories: { info: { appenders: ["file", "console"], level: "info" } }
+	categories: { info: { appenders: ["file", "console"], level: logLevel } }
   });
    
-  const logger = log4js.getLogger("cheese");
-  logger.trace("Entering cheese testing");
-  logger.debug("Got cheese.");
-  logger.info("Cheese is Comté.");
-  logger.warn("Cheese is quite smelly.");
-  logger.error("Cheese is too ripe!");
-  logger.fatal("Cheese was breeding ground for listeria.");
+const logger = log4js.getLogger();
 
 const NodeCouchDb = require("node-couchdb");
 
@@ -43,14 +38,14 @@ app.use("/file", express.static(path.join(__dirname, "static/audio")));
 
 //Get object
 app.get("/boards", (req, res) => {
-	console.log("Recieved request from " + req.ip);
+	logger.info("/boards request recieved from " + req.ip);
 	couch.get(dbName, viewURL).then(({data, headers, status}) => {
 		const boards = {
 			status: "success"
 		}
 		boards.numOfBoards = data.total_rows;
 		boards.boards = data.rows;
-		console.log("Sent boards to " + req.ip);
+		logger.info("Sent boards to " + req.ip);
 		res.json(boards);
 	}, (err) => {
 		const boards = {
@@ -58,7 +53,7 @@ app.get("/boards", (req, res) => {
 			message: "error getting boards",
 			error: err
 		}
-		console.error("Error getting boards" + err);
+		logger.error("Error getting boards" + err);
 		res.send(boards);
 	});
 });
@@ -66,14 +61,14 @@ app.get("/boards", (req, res) => {
 //Takes in board object to update and
 //updates the doc in the db
 app.post("/update/board", (req, res) => {
+	logger.info(`updating board ${req.body.id} from ${req.ip}`);
 	const board = req.body;
-	let _id, _rev;
-	if (board._id) {
 		couch.update(dbName, board).then(({data, headers, status}) => {
 			let response = {
 				status: "Success",
 				message: "Doc updated"
 			}
+			logger.info("successfully updated the board");
 			res.json(response);
 		}, err => {
 			let response = {
@@ -81,12 +76,13 @@ app.post("/update/board", (req, res) => {
 				message: "failed to update doc"
 			}
 			response.error = err;
+			logger.error("Error updating boards: " + err);
 			res.json(response);
 		})
-	}
 });
 
 app.post("/new/board", (req, res) => {
+	logger.info()
 	couch.uniqid().then((ids) => {
 		const _id = ids[0];
 		board._id=_id;
