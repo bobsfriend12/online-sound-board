@@ -1,38 +1,124 @@
 const log4js = require("log4js")
 const dotenv = require("dotenv");
-dotenv.config();
-const port = process.env.PORT;
-const dbUser = process.env.DB_USER;
-const dbPwd = process.env.DB_PASSWORD;
-const logLevel = process.env.LOG_LEVEL;
-
 const path = require("path");
-
+const NodeCouchDb = require("node-couchdb");
 const express = require("express");
-const app = express();
 
+
+//=======================================
+//===============VARIABLES===============
+//=======================================
+let port, dbHost, dbPort, dbProtocol, dbUser, dbPwd, dbName, viewURL, logLevel, logFile;
+dotenv.config();
+if (process.env.DEV_MODE === "true") {
+	port = process.env.DEV_PORT;
+	dbHost = process.env.DEV_DB_HOST;
+	dbPort = process.env.DEV_DB_PORT;
+	dbProtocol = process.env.DEV_DB_PROTOCOL;
+	dbUser = process.env.DEV_DB_USER;
+	dbPwd = process.env.DEV_DB_PASSWORD;
+	dbName = process.env.DEV_DB_NAME;
+	viewURL = process.env.DEV_DB_VIEW;
+	logLevel = process.env.DEV_LOG_LEVEL;
+	logFile = process.env.DEV_LOG_FILE;
+} else {
+	port = process.env.PORT;
+	dbHost = process.env.DB_HOST;
+	dbPort = process.env.DB_PORT;
+	dbProtocol = process.env.DB_PROTOCOL;
+	dbUser = process.env.DB_USER;
+	dbPwd = process.env.DB_PASSWORD;
+	dbName = process.env.DB_NAME;
+	viewURL = process.env.DB_VIEW;	
+	logLevel = process.env.LOG_LEVEL;
+}
+//=======================================
+//=================LOGGING===============
+//=======================================
+let logWarn;
+if(logLevel == undefined) {
+	logLevel = "info";
+	logWarn = true;
+}
 log4js.configure({
 	appenders: { 
 		file: { type: "dateFile", filename: "logs/app.log", layout: {type: "basic"}, compress: true, daysToKeep: 14, keepFileExt: true },
 		console: {type: "console"} },
-	categories: { info: { appenders: ["file", "console"], level: logLevel } }
-  });
-   
-const logger = log4js.getLogger();
+	categories: { 
+		default: { 
+			appenders: ["file", "console"], 
+			level: logLevel
+		},
+		noFile: {
+			appenders: ["console"],
+			level: logLevel
+		} 
+	}
+});
+let logger;
+if(logFile === "false") {
+	logger = log4js.getLogger("noFile");
+} else {
+	logger = log4js.getLogger();
+} 
 
-const NodeCouchDb = require("node-couchdb");
+logger.debug("Logging started")
+console.log(dbProtocol);
+//=======================================
+//=============VARIABLE CHECKS===========
+//=======================================
+if(port == undefined) {
+	logger.warn("No port defined defaulting to 3000");
+	port = 3000;
+}
+if(dbProtocol == undefined) {
+	logger.fatal("dbProtocol is not defined");
+	logger.fatal("Good Bye");
+	process.exit();
+}
+if(dbUser == undefined) {
+	logger.fatal("dbUser not defined.");
+	logger.fatal("Good Bye");
+	process.exit();
+}
+if(dbPwd == undefined) {
+	logger.fatal("dbPwd not defined.")
+	logger.fatal("\nGood Bye");
+	process.exit();
+}
+if(viewURL == undefined) {
+	logger.fatal("DB_VIEW is not defined");
+	logger.fatal("Good Bye");
+	process.exit();
+}
+if(logWarn === true) {
+	logger.warn("LOG_LEVEL is not defined defaulting to info");
+}
+
+logger.debug("All varibles checks complete.");
+//=======================================
+//=================COUCHDB===============
+//=======================================
 
 const couch = new NodeCouchDb({
-	host: process.env.DB_HOST,
-    protocol: process.env.DB_PROTOCOL,
-    port: process.env.DB_PORT,
+	host: dbHost,
+    protocol: dbProtocol,
+    port: dbPort,
 	auth: {
 		user: dbUser,
 		password: dbPwd
 	}
 });
-const dbName = process.env.DB_NAME;
-const viewURL = process.env.DB_VIEW;
+
+logger.debug("couchdb initialized.");
+
+//=======================================
+//================EXPRESS================
+//=======================================
+
+logger.debug("initializing express");
+const app = express();
+
 
 app.use("/file", express.static(path.join(__dirname, "static/audio")));
 
@@ -82,7 +168,7 @@ app.post("/update/board", (req, res) => {
 });
 
 app.post("/new/board", (req, res) => {
-	logger.info()
+	logger.info("New Board request received from " + req.ip);
 	couch.uniqid().then((ids) => {
 		const _id = ids[0];
 		board._id=_id;
@@ -91,6 +177,7 @@ app.post("/new/board", (req, res) => {
 				status: "success",
 				message: "created new doc"
 			}
+			logger.info("Successfully created new board");
 			res.json(response);
 		}, err => {
 			let response = {
@@ -98,11 +185,12 @@ app.post("/new/board", (req, res) => {
 				message: "Error creating new doc"
 			}
 			response.error = err;
+			logger.error("Failed to create new board" + err);
 			res.json(response);
 		});
 	});
 });
 
-app.listen(3000, () => {
-	console.log(`Listening on port ${port}. http://localhost:${port}`);
+app.listen(port, () => {
+	logger.info(`Started server on ${port}`);
 });
