@@ -18,6 +18,7 @@
 	},
 	"homepage": "https://github.com/bobsfriend12/online-sound-board#readme",
 	"dependencies": {
+		"cors": "^2.8.5",
 		"dotenv": "^10.0.0",
 		"express": "^4.17.2",
 		"log4js": "^6.3.0",

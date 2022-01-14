@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const NodeCouchDb = require("node-couchdb");
 const express = require("express");
+const cors = require("cors");
 
 //=======================================
 //===============VARIABLES===============
@@ -134,6 +135,7 @@ logger.debug("couchdb initialized.");
 logger.debug("initializing express");
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use("/file", express.static(path.join(__dirname, "static/audio")));
 
