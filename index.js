@@ -7,6 +7,8 @@ const cors = require("cors");
 const https = require("https");
 const fs = require("fs");
 const pem = require("pem");
+const fileUpload = require("express-fileupload");
+const bodyParser = require("body-parser");
 
 //=======================================
 //===============VARIABLES===============
@@ -117,7 +119,7 @@ if (logWarn === true) {
 logger.debug("All varibles checks complete.");
 
 //=======================================
-//=================Certs=================
+//=================CERTS=================
 //=======================================
 
 if (!fs.existsSync(path.join(__dirname, "certs"))) {
@@ -166,20 +168,18 @@ logger.debug("couchdb initialized.");
 logger.debug("initializing express");
 const app = express();
 
-app.use(cors({ origin: "*", credentials: true }));
-app.use(function (req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header(
-		"Access-Control-Allow-Methods",
-		"GET, POST, OPTIONS, PUT, PATCH, DELETE"
-	);
-	res.header(
-		"Access-Control-Allow-Headers",
-		"x-access-token, Origin, X-Requested-With, Content-Type, Accept"
-	);
-	next();
-});
-app.use(express.json());
+app.use(cors({}));
+app.use(
+	bodyParser.json({
+		limit: "50mb"
+	})
+);
+app.use(
+	bodyParser.urlencoded({
+		extended: true
+	})
+);
+app.use(fileUpload({ createParentPath: true }));
 app.use("/file", express.static(path.join(__dirname, "static/audio")));
 
 //Get object
@@ -285,6 +285,27 @@ app.post("/new/board", (req, res) => {
 			}
 		);
 	});
+});
+
+app.post("/upload", (req, res) => {
+	logger.info("Uploading file from " + req.ip);
+
+	try {
+		const file = req.files.audio;
+
+		file.mv("./static/audio/" + file.name);
+		const ret = {
+			status: "success",
+			data: {
+				name: file.name,
+				size: file.size
+			}
+		};
+		res.json(ret);
+	} catch (err) {
+		logger.error("Error uploading file: " + err);
+		res.status(500).send(err);
+	}
 });
 
 const server = https.createServer(
