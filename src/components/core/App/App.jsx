@@ -1,11 +1,13 @@
 import React from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
+import axios from 'axios';
+
 import BaseLayout from "../BaseLayout/BaseLayout";
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
 //TODO: get results from db
-const dbResults = {
+let dbResults = {
 	status: "success",
 	numOfBoards: 3,
 	boards: [
