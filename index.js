@@ -4,6 +4,8 @@ const path = require("path");
 const NodeCouchDb = require("node-couchdb");
 const express = require("express");
 const cors = require("cors");
+const https = require("https");
+const fs = require("fs");screenX
 
 //=======================================
 //===============VARIABLES===============
@@ -112,6 +114,13 @@ if (logWarn === true) {
 }
 
 logger.debug("All varibles checks complete.");
+
+//=======================================
+//=================Certs=================
+//=======================================
+
+
+
 //=======================================
 //=================COUCHDB===============
 //=======================================
@@ -229,6 +238,8 @@ app.post("/new/board", (req, res) => {
 		);
 	});
 });
+
+const server = (https)
 
 app.listen(port, () => {
 	logger.info(`Started server on ${port}`);
