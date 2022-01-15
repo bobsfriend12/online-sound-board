@@ -63,7 +63,6 @@ function BaseLayout({ page, ...props }) {
 	//If the boardId in the URL doesn't match one in the db
 	//then redirect back to the dashboard
 	if (currBoard === undefined) {
-		console.log("Undefined board, redirect to dashboard");
 		return <Navigate to="/dashboard" />;
 	}
 	//Render the current board into the page

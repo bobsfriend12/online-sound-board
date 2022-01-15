@@ -3,8 +3,6 @@ import React from "react";
 import Btn from "../../Btn/Btn";
 
 function EditSound({ sound, onClose, onSave, onDelete }) {
-	console.log("Modal type is editSound");
-	console.log(sound);
 	let title, audioName, audioDuration;
 
 	function handleSave() {
@@ -14,7 +12,6 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 		newSoundObj.name = title;
 		newSoundObj.audioFile = audioName;
 		newSoundObj.duration = audioDuration;
-		console.log(newSoundObj);
 		onSave(newSoundObj);
 	}
 
@@ -25,7 +22,6 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 			.setAttribute("src", URL.createObjectURL(files[0]));
 		document.querySelector("#file-preview").load();
 		audioName = e.target.files[0].name;
-		console.log(audioName);
 	}
 
 	function convertHMS(value) {

@@ -25,7 +25,6 @@ function EditBoard({ board }) {
 	const [sound, setSound] = useState({});
 
 	useEffect(() => {
-		console.log(board);
 		if (board !== undefined) {
 			setTitle(board.title);
 		}
@@ -33,7 +32,6 @@ function EditBoard({ board }) {
 
 	let navigate = useNavigate();
 	if (board === undefined) {
-		console.log("Undefined board, redirect to dashboard");
 		return <Navigate to="/dashboard" />;
 	}
 	const sounds = currBoard.sounds;
@@ -48,7 +46,6 @@ function EditBoard({ board }) {
 
 	function onEditSave(newSoundObj) {
 		sounds[sounds.findIndex((o) => o.id === newSoundObj.id)] = newSoundObj;
-		console.log(sounds);
 		setShowEdit(false);
 	}
 
@@ -96,6 +93,8 @@ function EditBoard({ board }) {
 	//That hooks are being used conditionally
 	const SaveChanges = () => {
 		let newBoard = {
+			_id: board._id,
+			_rev: board._rev,
 			index: board.index
 		};
 		//See sidebar comp for details on this
@@ -155,7 +154,6 @@ function EditBoard({ board }) {
 					<ReactTabulator
 						ref={(r) => {
 							ref = r;
-							console.log(r);
 							let hi;
 							setRows !== undefined && r !== null
 								? setRows(r)

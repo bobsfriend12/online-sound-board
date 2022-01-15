@@ -28,7 +28,6 @@ function Table({ edit, setRows, sounds, setSounds }) {
 		soundsCopy[sounds.findIndex((o) => o.id === newSoundObj.id)] =
 			newSoundObj;
 		setSounds(soundsCopy);
-		console.log(sounds);
 		setShowEdit(false);
 	}
 

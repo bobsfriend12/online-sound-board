@@ -1,107 +1,97 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import axios from 'axios';
+import axios from "axios";
 
 import BaseLayout from "../BaseLayout/BaseLayout";
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
-//TODO: get results from db
-let dbResults = {
-	status: "success",
-	numOfBoards: 3,
-	boards: [
-		{
-			index: 0,
-			id: "the-radio-play-disaster",
-			title: "The Radio Play Disaster",
-			numOfSounds: 3,
-			sounds: [
-				{
-					index: 0,
-					id: "heat-laser",
-					name: "Heat Laser",
-					audioFile: "heatlaser.mp3"
-				},
-				{
-					index: 1,
-					id: "twinkle-twinkle",
-					name: "Twinkle Twinkle Little Star",
-					audioFile: "twinkle.mp3"
-				},
-				{
-					index: 2,
-					id: "breaking-news",
-					name: "Breaking News",
-					audioFile: "breakingNews.mp3"
-				}
-			]
-		},
-		{
-			index: 1,
-			id: "the-alibis",
-			title: "The Alibis",
-			numOfSounds: 3,
-			sounds: [
-				{
-					index: 0,
-					id: "floor-boards",
-					name: "Creaking Floor Boards",
-					audioFile: "floorboards.mp3"
-				},
-				{
-					index: 1,
-					id: "mozart",
-					name: "mozart",
-					audioFile: "mozart.mp3"
-				},
-				{
-					index: 2,
-					id: "door-creak",
-					name: "Door Creak",
-					audioFile: "doorCreak.mp3"
-				}
-			]
-		},
-		{
-			index: 2,
-			id: "the-lion-king-jr",
-			title: "The Lion King Jr.",
-			numOfSounds: 3,
-			sounds: [
-				{
-					index: 0,
-					id: "tune-up",
-					name: "Orchestra Tune-Up",
-					audioFile: "tuneup.mp3",
-					duration: "00:40"
-				},
-				{
-					index: 1,
-					id: "circle-of-life",
-					name: "Circle of Life",
-					audioFile: "circleOfLife.mp3",
-					duration: "1:40"
-				},
-				{
-					index: 2,
-					id: "into-scars-cave",
-					name: "Into Scars Cave",
-					audioFile: "intoScarsCave.mp3",
-					duration: "4:20"
-				}
-			]
-		}
-	]
-};
-
-const editBoard = (newBoard) => {
-	console.log("UPDATE BOARD: ", newBoard);
-	dbResults.boards[newBoard.index] = newBoard;
-};
-const boards = dbResults.boards;
+let dbResults = {};
 
 function App() {
+	const [loading, setLoading] = useState(true);
+
+	const reloadDb = () => {
+		fetch(`${process.env.REACT_APP_API_URL}/boards`)
+			.then((res) => {
+				let data;
+				res.json().then((json) => {
+					data = json;
+					dbResults = data;
+					setLoading(false);
+				});
+				// console.log(res.json());
+				// setContent(res.json());
+				// setLoading(false);
+			})
+			.catch((err) => {
+				const ers = JSON.stringify(err);
+				// setContent(`${ers}`);
+				// setLoading(false);
+			});
+	};
+
+	const editBoard = (newBoard) => {
+		console.log("UPDATE BOARD: ", newBoard);
+		dbResults.boards[newBoard.index] = newBoard;
+
+		//For new boards
+		if (newBoard.index === dbResults.numOfBoards) {
+			dbResults.numOfBoards++;
+
+			fetch(`${process.env.REACT_APP_API_URL}/new/board`, {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(newBoard)
+			})
+				.then((res) => {
+					console.log(res);
+					// reloadDb();
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} else {
+			fetch(`${process.env.REACT_APP_API_URL}/update/board`, {
+				method: "POST",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(newBoard)
+			})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		}
+	};
+
+	useEffect(() => {
+		fetch(`${process.env.REACT_APP_API_URL}/boards`)
+			.then((res) => {
+				res.json().then((json) => {
+					dbResults = json;
+					setLoading(false);
+				});
+			})
+			.catch((err) => {
+				const ers = JSON.stringify(err);
+				setLoading(false);
+			});
+	}, []);
+	const boards = dbResults.boards;
+
+	//TODO: better loading
+	if (loading) {
+		return <div>Loading...</div>;
+	}
+
 	return (
 		<DatabaseContext.Provider value={{ dbResults, editBoard }}>
 			<BrowserRouter>
