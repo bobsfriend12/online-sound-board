@@ -5,7 +5,8 @@ const NodeCouchDb = require("node-couchdb");
 const express = require("express");
 const cors = require("cors");
 const https = require("https");
-const fs = require("fs");screenX
+const fs = require("fs");
+const pem = require("pem");
 
 //=======================================
 //===============VARIABLES===============
@@ -119,7 +120,28 @@ logger.debug("All varibles checks complete.");
 //=================Certs=================
 //=======================================
 
+if (!fs.existsSync(path.join(__dirname, "certs"))) {
+	logger.debug("no certs folder found");
+	logger.debug("creating certs folder");
+	fs.mkdirSync(path.join(__dirname, "certs"));
+}
 
+//Check if the certs are there
+//if not create them
+if (
+	fs.existsSync("certs/backend.pem") &&
+	fs.existsSync("certs/backend-key.pem")
+) {
+	logger.debug("Certs found");
+} else {
+	logger.debug("Certs not found");
+	logger.debug("Creating certs");
+	//Create the certs
+	pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
+		fs.writeFileSync("certs/backend.pem", keys.certificate);
+		fs.writeFileSync("certs/backend-key.pem", keys.serviceKey);
+	});
+}
 
 //=======================================
 //=================COUCHDB===============
@@ -144,7 +166,19 @@ logger.debug("couchdb initialized.");
 logger.debug("initializing express");
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: "*", credentials: true }));
+app.use(function (req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header(
+		"Access-Control-Allow-Methods",
+		"GET, POST, OPTIONS, PUT, PATCH, DELETE"
+	);
+	res.header(
+		"Access-Control-Allow-Headers",
+		"x-access-token, Origin, X-Requested-With, Content-Type, Accept"
+	);
+	next();
+});
 app.use(express.json());
 app.use("/file", express.static(path.join(__dirname, "static/audio")));
 
@@ -190,25 +224,39 @@ app.get("/boards", (req, res) => {
 app.post("/update/board", (req, res) => {
 	logger.info(`updating board ${req.body.id} from ${req.ip}`);
 	const board = req.body;
-	couch.update(dbName, board).then(
-		({ data, headers, status }) => {
-			let response = {
-				status: "Success",
-				message: "Doc updated"
-			};
-			logger.info("successfully updated the board");
-			res.json(response);
-		},
-		(err) => {
-			let response = {
-				status: "error",
-				message: "failed to update doc"
-			};
-			response.error = err;
-			logger.error("Error updating boards: " + err);
-			res.json(response);
+
+	const mangoQuery = {
+		selector: {
+			id: { $gte: board.id }
 		}
-	);
+	};
+	//Make mango query to make sure that _rev is up to date
+	//and to make sure that there is an _id
+	couch.mango(dbName, mangoQuery, {}).then(({ data, headers, status }) => {
+		logger.debug("board found");
+		board._id = data.docs[0]._id;
+		board._rev = data.docs[0]._rev;
+
+		couch.update(dbName, board).then(
+			({ data, headers, status }) => {
+				let response = {
+					status: "Success",
+					message: "Doc updated"
+				};
+				logger.info("successfully updated the board");
+				res.json(response);
+			},
+			(err) => {
+				let response = {
+					status: "error",
+					message: "failed to update doc"
+				};
+				response.error = err;
+				logger.error("Error updating boards: " + err);
+				res.json(response);
+			}
+		);
+	});
 });
 
 app.post("/new/board", (req, res) => {
@@ -239,8 +287,14 @@ app.post("/new/board", (req, res) => {
 	});
 });
 
-const server = (https)
+const server = https.createServer(
+	{
+		key: fs.readFileSync("certs/backend-key.pem"),
+		cert: fs.readFileSync("certs/backend.pem")
+	},
+	app
+);
 
-app.listen(port, () => {
-	logger.info(`Started server on ${port}`);
+server.listen(port, () => {
+	logger.info(`Started https server on ${port}`);
 });
