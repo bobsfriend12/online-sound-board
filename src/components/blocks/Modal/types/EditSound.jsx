@@ -1,22 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 
 import Btn from "../../Btn/Btn";
 
 function EditSound({ sound, onClose, onSave, onDelete }) {
-	let title, audioName, audioDuration;
+	const [noAudio, setNoAudio] = useState(false);
+	const [noTitle, setNoTitle] = useState(false);
+	const [saving, setSaving] = useState(false);
+	let title = sound.name,
+		audioName,
+		audioDuration,
+		files;
 
 	function handleSave() {
-		let newSoundObj = {};
-		newSoundObj.index = sound.index;
-		newSoundObj.id = sound.id;
-		newSoundObj.name = title;
-		newSoundObj.audioFile = audioName;
-		newSoundObj.duration = audioDuration;
-		onSave(newSoundObj);
+		console.log("saving");
+		setNoAudio(false);
+		setNoTitle(false);
+		if (audioName && title !== "") {
+			setSaving(true);
+
+			const audioExtension = audioName.split(".").pop();
+
+			let newSoundObj = {};
+			newSoundObj.index = sound.index;
+			newSoundObj.id = sound.id;
+			newSoundObj.name = title;
+			newSoundObj.audioFile = `${sound.id}.${audioExtension}`;
+			newSoundObj.duration = audioDuration;
+
+			const formData = new FormData();
+			formData.append("audio", files[0]);
+			formData.append("id", sound.id);
+			formData.append("fileExtension", audioExtension);
+
+			fetch(`${process.env.REACT_APP_API_URL}/upload`, {
+				method: "POST",
+				body: formData
+			});
+			console.log(newSoundObj);
+			onSave(newSoundObj);
+			setSaving(false);
+		} else if (!audioName && title !== "") {
+			let newSoundObj = {};
+			newSoundObj.index = sound.index;
+			newSoundObj.id = sound.id;
+			newSoundObj.name = title;
+			newSoundObj.audioFile = sound.audioFile;
+			newSoundObj.duration = sound.duration;
+			console.log(newSoundObj);
+			onSave(newSoundObj);
+		} else if (!audioName && title === "") {
+			setNoAudio(true);
+			setNoTitle(true);
+		} else if (!audioName) {
+			setNoAudio(true);
+		} else if (title === "") {
+			setNoTitle(true);
+		}
 	}
 
 	function handleFiles(e) {
-		let files = e.target.files;
+		files = e.target.files;
 		document
 			.querySelector("#src")
 			.setAttribute("src", URL.createObjectURL(files[0]));
@@ -82,6 +125,13 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 								This is used as the name for the sound when you
 								launch the board. Make this whatever you want.
 							</p>
+							{noTitle ? (
+								<p className="input__error">
+									Please input a title
+								</p>
+							) : (
+								<></>
+							)}
 							<input
 								type="text"
 								className="title__input"
@@ -101,8 +151,16 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 							<p className="input__description">
 								This is the audio file that is uploaded to the
 								server, so that you play it when you launch a
-								board.
+								board. If you don't wan't to change it, just
+								leave it blank.
 							</p>
+							{noAudio ? (
+								<p className="input__error">
+									Please upload an audio file
+								</p>
+							) : (
+								<></>
+							)}
 							<input
 								type="file"
 								className="file__input"
@@ -117,7 +175,10 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 								controls
 								onLoadedMetadata={getDuration}
 							>
-								<source src="" id="src" />
+								<source
+									src={`${process.env.REACT_APP_API_URL}/file/${sound.audioFile}`}
+									id="src"
+								/>
 							</audio>
 						</div>
 					</div>
@@ -134,7 +195,7 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 						onClick={onClose}
 					/>
 					<Btn
-						content="Save"
+						content={saving ? "Saving" : "Save"}
 						extraClasses="modal__btn"
 						onClick={handleSave}
 					/>

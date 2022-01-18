@@ -33,7 +33,16 @@ function App() {
 
 	const editBoard = (newBoard) => {
 		console.log("UPDATE BOARD: ", newBoard);
-		dbResults.boards[newBoard.index] = newBoard;
+		let newIndex;
+		const newBoardIndex = dbResults.boards.findIndex(
+			(i) => i.id === newBoard.id
+		);
+		if (newBoardIndex === -1) {
+			newIndex = dbResults.boards.length;
+		} else {
+			newIndex = newBoardIndex;
+		}
+		dbResults.boards[newIndex] = newBoard;
 
 		//For new boards
 		if (newBoard.index === dbResults.numOfBoards) {
@@ -72,6 +81,33 @@ function App() {
 		}
 	};
 
+	const deleteBoard = (board) => {
+		console.log("DELETE BOARD: ", board);
+
+		let boards = dbResults.boards;
+
+		boards.splice(board.index, 1);
+
+		for (let i = 0; i < boards.length; i++) {
+			boards[i].index = i;
+		}
+
+		fetch(`${process.env.REACT_APP_API_URL}/board`, {
+			method: "DELETE",
+			headers: {
+				Accept: "application/json",
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(board)
+		})
+			.then((res) => {
+				console.log(res);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
 	useEffect(() => {
 		fetch(`${process.env.REACT_APP_API_URL}/boards`)
 			.then((res) => {
@@ -93,7 +129,7 @@ function App() {
 	}
 
 	return (
-		<DatabaseContext.Provider value={{ dbResults, editBoard }}>
+		<DatabaseContext.Provider value={{ dbResults, editBoard, deleteBoard }}>
 			<BrowserRouter>
 				<Routes>
 					<Route path="*" element={<BaseLayout page="notFound" />} />

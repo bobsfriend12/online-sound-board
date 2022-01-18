@@ -3,9 +3,10 @@ import React from "react";
 import Btn from "../../Btn/Btn";
 
 function NewSound({ sound, onClose, onSave }) {
-	let title, audioName, audioDuration;
+	let title, audioName, audioDuration, files;
 
 	function handleSave() {
+		const audioExtension = audioName.split(".").pop();
 		let newSoundObj = {};
 		//See sidebar comp for details on this
 		const id = title
@@ -14,13 +15,23 @@ function NewSound({ sound, onClose, onSave }) {
 			.toLowerCase();
 		newSoundObj.id = id;
 		newSoundObj.name = title;
-		newSoundObj.audioFile = audioName;
+		newSoundObj.audioFile = `${id}.${audioExtension}`;
 		newSoundObj.duration = audioDuration;
 		onSave(newSoundObj);
+
+		const formData = new FormData();
+		formData.append("audio", files[0]);
+		formData.append("id", id);
+		formData.append("fileExtension", audioExtension);
+
+		fetch(`${process.env.REACT_APP_API_URL}/upload`, {
+			method: "POST",
+			body: formData
+		});
 	}
 
 	function handleFiles(e) {
-		let files = e.target.files;
+		files = e.target.files;
 		document
 			.querySelector("#src")
 			.setAttribute("src", URL.createObjectURL(files[0]));

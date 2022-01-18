@@ -15,7 +15,7 @@ function EditBoard({ board }) {
 	const [title, setTitle] = useState();
 	const [showNew, setShowNew] = useState(false);
 	const [r, setRows] = useState([]);
-	const { editBoard } = useContext(DatabaseContext);
+	const { editBoard, deleteBoard } = useContext(DatabaseContext);
 
 	const { dbResults } = useContext(DatabaseContext);
 	const { boardId } = useParams();
@@ -53,6 +53,16 @@ function EditBoard({ board }) {
 		newSoundsObj.index = sounds.length;
 		sounds.push(newSoundsObj);
 		setShowNew(false);
+	}
+
+	function onBoardDelete() {
+		const confirm = window.confirm(
+			"Are you sure you want to delete this board?"
+		);
+		if (confirm) {
+			deleteBoard(board);
+			navigate("/dashboard");
+		}
 	}
 
 	function EditBtn(props) {
@@ -121,6 +131,7 @@ function EditBoard({ board }) {
 			<div className="edit__top">
 				<h1 className="edit__title">{board.title}</h1>
 				<div className="edit__right">
+					<Btn content="Delete" onClick={onBoardDelete} />
 					<Btn content="Save" onClick={SaveChanges} />
 				</div>
 			</div>
