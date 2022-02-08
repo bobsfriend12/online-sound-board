@@ -11,26 +11,6 @@ let dbResults = {};
 function App() {
 	const [loading, setLoading] = useState(true);
 
-	const reloadDb = () => {
-		fetch(`${process.env.REACT_APP_API_URL}/boards`)
-			.then((res) => {
-				let data;
-				res.json().then((json) => {
-					data = json;
-					dbResults = data;
-					setLoading(false);
-				});
-				// console.log(res.json());
-				// setContent(res.json());
-				// setLoading(false);
-			})
-			.catch((err) => {
-				const ers = JSON.stringify(err);
-				// setContent(`${ers}`);
-				// setLoading(false);
-			});
-	};
-
 	const editBoard = (newBoard) => {
 		console.log("UPDATE BOARD: ", newBoard);
 		let newIndex;
@@ -86,16 +66,12 @@ function App() {
 
 		let boards = dbResults.boards;
 
-		boards.splice(board.index, 1);
-
-		for (let i = 0; i < boards.length; i++) {
-			boards[i].index = i;
-		}
+		boards.splice(dbResults.indexOf(board), 1);
 
 		fetch(`${process.env.REACT_APP_API_URL}/board`, {
 			method: "DELETE",
 			headers: {
-				Accept: "application/json",
+				"Accept": "application/json",
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify(board)

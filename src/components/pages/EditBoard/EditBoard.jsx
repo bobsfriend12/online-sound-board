@@ -105,7 +105,6 @@ function EditBoard({ board }) {
 		let newBoard = {
 			_id: board._id,
 			_rev: board._rev,
-			index: board.index
 		};
 		//See sidebar comp for details on this
 		newBoard.id = title

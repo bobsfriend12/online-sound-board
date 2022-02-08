@@ -19,8 +19,6 @@ function Sidebar() {
 	let navigate = useNavigate();
 
 	function onSave(newBoardObj) {
-		newBoardObj.index = boards.length;
-
 		setShow(false);
 		editBoard(newBoardObj);
 		navigate(`/dashboard/${newBoardObj.id}`);
