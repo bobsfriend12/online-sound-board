@@ -128,6 +128,25 @@ if (!fs.existsSync(path.join(__dirname, "certs"))) {
 	fs.mkdirSync(path.join(__dirname, "certs"));
 }
 
+const generateCerts = async () {
+	logger.debug("generating certs");
+	const options = {
+		days: 365,
+		selfSigned: true,
+	}
+	await pem.createCertificate(options, (err, keys) => {
+		if (err) {
+			logger.fatal("Error creating self signed cert");
+			logger.fatal(err);
+			process.exit();
+		}
+		fs.writeFileSync(path.join(__dirname, "certs/key.pem"), keys.serviceKey);
+		fs.writeFileSync(path.join(__dirname, "certs/cert.pem"), keys.certificate);
+	}
+	);
+
+}
+
 //Check if the certs are there
 //if not create them
 if (
@@ -139,10 +158,18 @@ if (
 	logger.debug("Certs not found");
 	logger.debug("Creating certs");
 	//Create the certs
-	pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
-		fs.writeFileSync("certs/backend.pem", keys.certificate);
-		fs.writeFileSync("certs/backend-key.pem", keys.serviceKey);
-	});
+	// var cert, key;
+	// pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
+	// 	logger.debug("Saving certs");
+	// 	// fs.writeFileSync("certs/backend.pem", keys.certificate);
+	// 	// fs.writeFileSync("certs/backend-key.pem", keys.serviceKey);
+	// 	key = keys.serviceKey;
+	// 	cert = keys.certificate;
+	// });
+	// logger.debug(cert, key);
+	// fs.writeFileSync("certs/backend.pem", cert);
+	// fs.writeFileSync("certs/backend-key.pem", key);
+	generateCerts();
 }
 
 //=======================================
