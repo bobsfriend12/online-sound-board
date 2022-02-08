@@ -13,6 +13,7 @@ const bodyParser = require("body-parser");
 //=======================================
 //===============VARIABLES===============
 //=======================================
+//#region vars
 let port,
 	dbHost,
 	dbPort,
@@ -22,7 +23,8 @@ let port,
 	dbName,
 	viewURL,
 	logLevel,
-	logFile;
+	logFile,
+	needDelay = false;
 dotenv.config();
 if (process.env.DEV_MODE === "true") {
 	port = process.env.DEV_PORT;
@@ -46,9 +48,11 @@ if (process.env.DEV_MODE === "true") {
 	viewURL = process.env.DB_VIEW;
 	logLevel = process.env.LOG_LEVEL;
 }
+//#endregion
 //=======================================
 //=================LOGGING===============
 //=======================================
+//#region logging
 let logWarn;
 if (logLevel == undefined) {
 	logLevel = "info";
@@ -85,9 +89,11 @@ if (logFile === "false") {
 }
 
 logger.debug("Logging started");
+//#endregion
 //=======================================
 //=============VARIABLE CHECKS===========
 //=======================================
+//#region checks
 if (port == undefined) {
 	logger.warn("No port defined defaulting to 3000");
 	port = 3000;
@@ -117,34 +123,15 @@ if (logWarn === true) {
 }
 
 logger.debug("All varibles checks complete.");
-
+//#endregion
 //=======================================
 //=================CERTS=================
 //=======================================
-
+//#region certs
 if (!fs.existsSync(path.join(__dirname, "certs"))) {
 	logger.debug("no certs folder found");
 	logger.debug("creating certs folder");
 	fs.mkdirSync(path.join(__dirname, "certs"));
-}
-
-const generateCerts = async () {
-	logger.debug("generating certs");
-	const options = {
-		days: 365,
-		selfSigned: true,
-	}
-	await pem.createCertificate(options, (err, keys) => {
-		if (err) {
-			logger.fatal("Error creating self signed cert");
-			logger.fatal(err);
-			process.exit();
-		}
-		fs.writeFileSync(path.join(__dirname, "certs/key.pem"), keys.serviceKey);
-		fs.writeFileSync(path.join(__dirname, "certs/cert.pem"), keys.certificate);
-	}
-	);
-
 }
 
 //Check if the certs are there
@@ -157,25 +144,19 @@ if (
 } else {
 	logger.debug("Certs not found");
 	logger.debug("Creating certs");
+	needDelay = true;
 	//Create the certs
-	// var cert, key;
-	// pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
-	// 	logger.debug("Saving certs");
-	// 	// fs.writeFileSync("certs/backend.pem", keys.certificate);
-	// 	// fs.writeFileSync("certs/backend-key.pem", keys.serviceKey);
-	// 	key = keys.serviceKey;
-	// 	cert = keys.certificate;
-	// });
-	// logger.debug(cert, key);
-	// fs.writeFileSync("certs/backend.pem", cert);
-	// fs.writeFileSync("certs/backend-key.pem", key);
-	generateCerts();
+	pem.createCertificate({ days: 1, selfSigned: true }, function (err, keys) {
+		logger.debug("Saving certs");
+		fs.writeFileSync("certs/backend.pem", keys.certificate);
+		fs.writeFileSync("certs/backend-key.pem", keys.serviceKey);
+	});
 }
-
+//#endregion
 //=======================================
 //=================COUCHDB===============
 //=======================================
-
+//#region couch
 const couch = new NodeCouchDb({
 	host: dbHost,
 	protocol: dbProtocol,
@@ -187,11 +168,11 @@ const couch = new NodeCouchDb({
 });
 
 logger.debug("couchdb initialized.");
-
+//#endregion
 //=======================================
 //================EXPRESS================
 //=======================================
-
+//#region express
 logger.debug("initializing express");
 const app = express();
 
@@ -371,14 +352,26 @@ app.delete("/board", (req, res) => {
 		});
 });
 
-const server = https.createServer(
-	{
-		key: fs.readFileSync("certs/backend-key.pem"),
-		cert: fs.readFileSync("certs/backend.pem")
-	},
-	app
-);
 
+
+const startServer = () => {
+	const server = https.createServer(
+		{
+			key: fs.readFileSync("certs/backend-key.pem"),
+			cert: fs.readFileSync("certs/backend.pem")
+		},
+		app
+	);
 server.listen(port, () => {
 	logger.info(`Started https server on ${port}`);
 });
+
+}
+
+if(needDelay) {
+	logger.debug("Server will start in 10 seconds . . .")
+	setTimeout(startServer, 10000);
+} else {
+	startServer();
+}
+//#endregion
