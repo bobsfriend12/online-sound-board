@@ -15,6 +15,7 @@ const bodyParser = require("body-parser");
 //=======================================
 //#region vars
 let port,
+	httpsServer,
 	dbHost,
 	dbPort,
 	dbProtocol,
@@ -28,6 +29,7 @@ let port,
 dotenv.config();
 if (process.env.DEV_MODE === "true") {
 	port = process.env.DEV_PORT;
+	httpsServer = process.env.DEV_HTTPS;
 	dbHost = process.env.DEV_DB_HOST;
 	dbPort = process.env.DEV_DB_PORT;
 	dbProtocol = process.env.DEV_DB_PROTOCOL;
@@ -94,18 +96,21 @@ logger.debug("Logging started");
 //=============VARIABLE CHECKS===========
 //=======================================
 //#region checks
+if (process.env.DEV_MODE === "true") {
+	logger.debug("Running in DEV mode");
+}
 if (port == undefined) {
 	logger.warn("No port defined defaulting to 3000");
 	port = 3000;
 }
 if (dbProtocol == undefined) {
 	logger.fatal("dbProtocol is not defined");
-	logger.fatal("Good Bye");
+	logger.fatal("\nGood Bye");
 	process.exit();
 }
 if (dbUser == undefined) {
 	logger.fatal("dbUser not defined.");
-	logger.fatal("Good Bye");
+	logger.fatal("\nGood Bye");
 	process.exit();
 }
 if (dbPwd == undefined) {
@@ -115,7 +120,7 @@ if (dbPwd == undefined) {
 }
 if (viewURL == undefined) {
 	logger.fatal("DB_VIEW is not defined");
-	logger.fatal("Good Bye");
+	logger.fatal("\nGood Bye");
 	process.exit();
 }
 if (logWarn === true) {
@@ -332,27 +337,35 @@ app.delete("/board", (req, res) => {
 		});
 	}
 
-	couch
-		.del(dbName, board._id, board._rev)
-		.then(({ data, headers, status }) => {
-			const ret = {
-				status: "success",
-				message: "deleted board"
-			};
-			res.json(ret);
-		})
-		.catch((err) => {
-			logger.error("Error deleting board: " + err);
-			const ret = {
-				status: "error",
-				message: "Error deleting board",
-				error: err
-			};
-			res.json(ret);
-		});
+	const mangoQuery = {
+		selector: {
+			id: { $gte: board.id }
+		}
+	};
+
+	couch.mango(dbName, mangoQuery, {}).then(({ data, headers, status }) => {
+		board._id = data.docs[0]._id;
+		board._rev = data.docs[0]._rev;
+		couch
+			.del(dbName, board._id, board._rev)
+			.then(({ data, headers, status }) => {
+				const ret = {
+					status: "success",
+					message: "deleted board"
+				};
+				res.json(ret);
+			})
+			.catch((err) => {
+				logger.error("Error deleting board: " + err);
+				const ret = {
+					status: "error",
+					message: "Error deleting board",
+					error: err
+				};
+				res.json(ret);
+			});
+	});
 });
-
-
 
 const startServer = () => {
 	const server = https.createServer(
@@ -362,16 +375,21 @@ const startServer = () => {
 		},
 		app
 	);
-server.listen(port, () => {
-	logger.info(`Started https server on ${port}`);
-});
+	server.listen(port, () => {
+		logger.info(`Started https server on ${port}`);
+	});
+};
 
-}
-
-if(needDelay) {
-	logger.debug("Server will start in 10 seconds . . .")
-	setTimeout(startServer, 10000);
+if (httpsServer === "true") {
+	if (needDelay) {
+		logger.debug("Server will start in 10 seconds . . .");
+		setTimeout(startServer, 10000);
+	} else {
+		startServer();
+	}
 } else {
-	startServer();
+	app.listen(port, () => {
+		logger.info(`Started http server on ${port}`);
+	});
 }
 //#endregion
