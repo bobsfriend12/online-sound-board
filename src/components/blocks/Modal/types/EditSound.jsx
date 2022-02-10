@@ -19,17 +19,18 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 			setSaving(true);
 
 			const audioExtension = audioName.split(".").pop();
+			const uuid = sound.audioFile.split(".")[0];
 
 			let newSoundObj = {};
 			newSoundObj.index = sound.index;
 			newSoundObj.id = sound.id;
 			newSoundObj.name = title;
-			newSoundObj.audioFile = `${sound.id}.${audioExtension}`;
+			newSoundObj.audioFile = `${uuid}.${audioExtension}`;
 			newSoundObj.duration = audioDuration;
 
 			const formData = new FormData();
 			formData.append("audio", files[0]);
-			formData.append("id", sound.id);
+			formData.append("id", uuid);
 			formData.append("fileExtension", audioExtension);
 
 			fetch(`${process.env.REACT_APP_API_URL}/upload`, {

@@ -25,7 +25,7 @@ function App() {
 		dbResults.boards[newIndex] = newBoard;
 
 		//For new boards
-		if (newBoard.index === dbResults.numOfBoards) {
+		if (newIndex === dbResults.numOfBoards) {
 			dbResults.numOfBoards++;
 
 			fetch(`${process.env.REACT_APP_API_URL}/new/board`, {
@@ -66,12 +66,13 @@ function App() {
 
 		let boards = dbResults.boards;
 
-		boards.splice(dbResults.indexOf(board), 1);
+		boards.splice(boards.indexOf(board), 1);
 
 		fetch(`${process.env.REACT_APP_API_URL}/board`, {
 			method: "DELETE",
+			mode: "cors",
 			headers: {
-				"Accept": "application/json",
+				Accept: "application/json",
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify(board)
@@ -85,6 +86,7 @@ function App() {
 	};
 
 	useEffect(() => {
+		console.log(process.env.REACT_APP_API_URL);
 		fetch(`${process.env.REACT_APP_API_URL}/boards`)
 			.then((res) => {
 				res.json().then((json) => {

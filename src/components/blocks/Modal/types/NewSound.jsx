@@ -5,6 +5,19 @@ import Btn from "../../Btn/Btn";
 function NewSound({ sound, onClose, onSave }) {
 	let title, audioName, audioDuration, files;
 
+	function uuidv4() {
+		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+			/[xy]/g,
+			function (c) {
+				var r = (Math.random() * 16) | 0,
+					v = c == "x" ? r : (r & 0x3) | 0x8;
+				return v.toString(16);
+			}
+		);
+	}
+
+	const uuid = uuidv4();
+
 	function handleSave() {
 		const audioExtension = audioName.split(".").pop();
 		let newSoundObj = {};
@@ -15,13 +28,13 @@ function NewSound({ sound, onClose, onSave }) {
 			.toLowerCase();
 		newSoundObj.id = id;
 		newSoundObj.name = title;
-		newSoundObj.audioFile = `${id}.${audioExtension}`;
+		newSoundObj.audioFile = `${uuid}.${audioExtension}`;
 		newSoundObj.duration = audioDuration;
 		onSave(newSoundObj);
 
 		const formData = new FormData();
 		formData.append("audio", files[0]);
-		formData.append("id", id);
+		formData.append("id", uuid);
 		formData.append("fileExtension", audioExtension);
 
 		fetch(`${process.env.REACT_APP_API_URL}/upload`, {
