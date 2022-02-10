@@ -9,6 +9,7 @@ const fs = require("fs");
 const pem = require("pem");
 const fileUpload = require("express-fileupload");
 const bodyParser = require("body-parser");
+const prompts = require("prompts");
 
 //=======================================
 //===============VARIABLES===============
@@ -162,6 +163,7 @@ if (
 //=================COUCHDB===============
 //=======================================
 //#region couch
+
 const couch = new NodeCouchDb({
 	host: dbHost,
 	protocol: dbProtocol,
@@ -173,6 +175,44 @@ const couch = new NodeCouchDb({
 });
 
 logger.debug("couchdb initialized.");
+//#endregion
+//=======================================
+//=================Prompt================
+//=======================================
+//#reegion prompt
+
+
+function cmdHelp() {
+
+}
+
+function cmdFreeze() {
+
+}
+
+function cmdBackup() {
+
+}
+
+function cmdExit() {
+
+}
+
+function cmdClear() {
+	console.clear();
+	commandPrompt();
+}
+
+async function commandPrompt() {
+	const response = await prompts({
+		type: 'text',
+		name: 'command',
+		message: 'Online Sound Board - Enter a command $',
+	  });
+	
+	  console.log(response);
+	  cmdClear();
+}
 //#endregion
 //=======================================
 //================EXPRESS================
@@ -390,6 +430,7 @@ if (httpsServer === "true") {
 } else {
 	app.listen(port, () => {
 		logger.info(`Started http server on ${port}`);
+		commandPrompt();
 	});
 }
 //#endregion
