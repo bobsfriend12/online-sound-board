@@ -9,7 +9,7 @@ const fs = require("fs");
 const pem = require("pem");
 const fileUpload = require("express-fileupload");
 const bodyParser = require("body-parser");
-const prompts = require("prompts");
+const myRL = require("serverline");
 
 //=======================================
 //===============VARIABLES===============
@@ -181,37 +181,46 @@ logger.debug("couchdb initialized.");
 //=======================================
 //#reegion prompt
 
+function cmdHelp() {}
 
-function cmdHelp() {
+function cmdFreeze() {}
 
-}
-
-function cmdFreeze() {
-
-}
-
-function cmdBackup() {
-
-}
+function cmdBackup() {}
 
 function cmdExit() {
-
+	logger.fatal("Good Bye");
+	process.exit();
 }
 
 function cmdClear() {
 	console.clear();
-	commandPrompt();
+	console.log("\033[2J");
 }
 
 async function commandPrompt() {
-	const response = await prompts({
-		type: 'text',
-		name: 'command',
-		message: 'Online Sound Board - Enter a command $',
-	  });
-	
-	  console.log(response);
-	  cmdClear();
+	myRL.init();
+	myRL.setCompletion(["help", "freeze", "backup", "exit", "clear"]);
+	myRL.on("line", function (line) {
+		switch (line.trim()) {
+			case "help":
+				cmdHelp();
+				break;
+			case "freeze":
+				cmdFreeze();
+				break;
+			case "backup":
+				cmdBackup();
+				break;
+			case "exit":
+				cmdExit();
+				break;
+			case "clear":
+				cmdClear();
+				break;
+			default:
+				logger.warn("Unknown command");
+		}
+	});
 }
 //#endregion
 //=======================================
