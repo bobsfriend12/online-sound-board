@@ -27,7 +27,8 @@ let port,
 	viewURL,
 	logLevel,
 	logFile,
-	needDelay = false;
+	needDelay = false,
+	frozen = false;
 dotenv.config();
 if (process.env.DEV_MODE === "true") {
 	port = process.env.DEV_PORT;
@@ -184,6 +185,7 @@ logger.debug("couchdb initialized.");
 
 function cmdHelp() {
 	console.log("Commands: \nfreeze - freeze express and prevent any api requests");
+	console.log("resume - start accepting requests again.")
 	console.log("backup - Backups the database locally.");
 	console.log("restore - restore from the local backup");
 	console.log("clear - clear all log messages from terminal.");
@@ -191,26 +193,58 @@ function cmdHelp() {
 }
 
 function cmdFreeze() {
+	frozen = true;
 	if(httpsServer === "true") {
 		server.close(() => logger.debug("freezing express"));
 	} else {
-		app.close();
+		server.close();
+	}
+}
+
+function cmdResume() {
+	if(frozen === true) {
+		if(httpsServer === "true") {
+			startServer();
+		} else {
+			var server = app.listen(port, () => {
+				logger.info(`Started http server on ${port}`);
+			});
+		}
+	} else {
+		logger.info("Server already running");
 	}
 }
 
 function cmdRestore() {
-	var config = {credentials: 'https://backend.calebbservers.ga:8943', databases: ["boards"]};
-	fs.createReadStream('./backups/db-backup.tar.gz').pipe(cbr.restore(config, done));
+	let adminUser, adminPwd;
+	myRL.question("What is your couchDB admin username?", (ans) => {
+		adminUser = ans;
+		myRL.secret("What is your couchDB admin password?", (ans) => {
+			adminPwd = ans;
+			const url = `https://${adminUser}:${adminPwd}@${dbHost}:${dbPort}`;
+			function done(err) {
+				if (err) {
+					return logger.error(err);
+				}
+				logger.info('Restore complete');
+			}
+			var config = {credentials: url, databases: [dbName]};
+			fs.createReadStream('./backup/db-backup.tar.gz').pipe(cbr.restore(config, done));
+		});
+	});
+	
+	
 }
 
 function cmdBackup() {
-	var config = {credentials: 'https://backend.calebbservers.ga:8943', databases: ["boards"]};
+	const url = `https://${dbUser}:${dbPwd}@${dbHost}:${dbPort}`;
+	var config = {credentials: url, databases: [dbName]};
 
 	function done(err) {
-	if (err) {
-		return logger.error(err);
-	}
-	logger.info('Backup complete');
+		if (err) {
+			return logger.error(err);
+		}
+		logger.info('Backup complete');
 	}
 
 	// backup
@@ -218,7 +252,9 @@ function cmdBackup() {
 		logger.debug("Creating backup directory")
 		fs.mkdirSync(path.join(__dirname, "backup"));
 	}
-	cbr.backup(config, done).pipe(fs.createWriteStream('./backups/db-backup.tar.gz'))
+	let wrstream = fs.createWriteStream('./backup/db-backup.tar.gz');
+	wrstream.on("open", (fd) => {	cbr.backup(config, done).pipe(wrstream);
+	});
 }
 
 function cmdExit() {
@@ -233,7 +269,7 @@ function cmdClear() {
 async function commandPrompt() {
 	logger.debug("initializing command prompt");
 	myRL.init();
-	myRL.setCompletion(["help", "freeze", "backup", "exit", "clear", "restore"]);
+	myRL.setCompletion(["help", "freeze", "backup", "exit", "clear", "restore", "resume"]);
 	myRL.on("line", function (line) {
 		switch (line.trim()) {
 			case "help":
@@ -241,6 +277,9 @@ async function commandPrompt() {
 				break;
 			case "freeze":
 				cmdFreeze();
+				break;
+			case "resume":
+				cmdResume();
 				break;
 			case "backup":
 				cmdBackup();
@@ -454,7 +493,7 @@ app.delete("/board", (req, res) => {
 });
 
 const startServer = () => {
-	const server = https.createServer(
+	var server = https.createServer(
 		{
 			key: fs.readFileSync("certs/backend-key.pem"),
 			cert: fs.readFileSync("certs/backend.pem")
@@ -474,7 +513,7 @@ if (httpsServer === "true") {
 		startServer();
 	}
 } else {
-	app.listen(port, () => {
+	var server = app.listen(port, () => {
 		logger.info(`Started http server on ${port}`);
 		commandPrompt();
 	});
