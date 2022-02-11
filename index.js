@@ -10,6 +10,7 @@ const pem = require("pem");
 const fileUpload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const myRL = require("serverline");
+const cbr = require("couchdb-backup-restore");
 
 //=======================================
 //===============VARIABLES===============
@@ -181,11 +182,44 @@ logger.debug("couchdb initialized.");
 //=======================================
 //#reegion prompt
 
-function cmdHelp() {}
+function cmdHelp() {
+	console.log("Commands: \nfreeze - freeze express and prevent any api requests");
+	console.log("backup - Backups the database locally.");
+	console.log("restore - restore from the local backup");
+	console.log("clear - clear all log messages from terminal.");
+	console.log("exit - exit the app.")
+}
 
-function cmdFreeze() {}
+function cmdFreeze() {
+	if(httpsServer === "true") {
+		server.close(() => logger.debug("freezing express"));
+	} else {
+		app.close();
+	}
+}
 
-function cmdBackup() {}
+function cmdRestore() {
+	var config = {credentials: 'https://backend.calebbservers.ga:8943', databases: ["boards"]};
+	fs.createReadStream('./backups/db-backup.tar.gz').pipe(cbr.restore(config, done));
+}
+
+function cmdBackup() {
+	var config = {credentials: 'https://backend.calebbservers.ga:8943', databases: ["boards"]};
+
+	function done(err) {
+	if (err) {
+		return logger.error(err);
+	}
+	logger.info('Backup complete');
+	}
+
+	// backup
+	if(!fs.existsSync(path.join(__dirname, "backup"))) {
+		logger.debug("Creating backup directory")
+		fs.mkdirSync(path.join(__dirname, "backup"));
+	}
+	cbr.backup(config, done).pipe(fs.createWriteStream('./backups/db-backup.tar.gz'))
+}
 
 function cmdExit() {
 	logger.fatal("Good Bye");
@@ -193,13 +227,13 @@ function cmdExit() {
 }
 
 function cmdClear() {
-	console.clear();
 	console.log("\033[2J");
 }
 
 async function commandPrompt() {
+	logger.debug("initializing command prompt");
 	myRL.init();
-	myRL.setCompletion(["help", "freeze", "backup", "exit", "clear"]);
+	myRL.setCompletion(["help", "freeze", "backup", "exit", "clear", "restore"]);
 	myRL.on("line", function (line) {
 		switch (line.trim()) {
 			case "help":
@@ -210,6 +244,9 @@ async function commandPrompt() {
 				break;
 			case "backup":
 				cmdBackup();
+				break;
+			case "restore":
+				cmdRestore();
 				break;
 			case "exit":
 				cmdExit();
