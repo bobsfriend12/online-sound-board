@@ -195,9 +195,9 @@ function cmdHelp() {
 function cmdFreeze() {
 	frozen = true;
 	if(httpsServer === "true") {
-		server.close(() => logger.debug("freezing express"));
+		server.close(() => logger.warn("freezing express"));
 	} else {
-		server.close();
+		server.close(() => logger.warn("freezing express"));
 	}
 }
 
@@ -205,9 +205,11 @@ function cmdResume() {
 	if(frozen === true) {
 		if(httpsServer === "true") {
 			startServer();
+			frozen = false;
 		} else {
-			var server = app.listen(port, () => {
+			server = app.listen(port, () => {
 				logger.info(`Started http server on ${port}`);
+				frozen = false;
 			});
 		}
 	} else {
@@ -237,24 +239,31 @@ function cmdRestore() {
 }
 
 function cmdBackup() {
-	const url = `https://${dbUser}:${dbPwd}@${dbHost}:${dbPort}`;
-	var config = {credentials: url, databases: [dbName]};
-
-	function done(err) {
-		if (err) {
-			return logger.error(err);
-		}
-		logger.info('Backup complete');
-	}
-
-	// backup
-	if(!fs.existsSync(path.join(__dirname, "backup"))) {
-		logger.debug("Creating backup directory")
-		fs.mkdirSync(path.join(__dirname, "backup"));
-	}
-	let wrstream = fs.createWriteStream('./backup/db-backup.tar.gz');
-	wrstream.on("open", (fd) => {	cbr.backup(config, done).pipe(wrstream);
+	let adminUser, adminPwd;
+	myRL.question("What is your couchDB admin username?", (ans) => {
+		adminUser = ans;
+		myRL.secret("What is your couchDB admin password?", (ans) => {
+			adminPwd = ans;
+			const url = `https://${adminUser}:${adminPwd}@${dbHost}:${dbPort}`;
+			function done(err) {
+				if (err) {
+					return logger.error(err);
+				}
+				logger.info('Backup complete');
+			}
+			var config = {credentials: url, databases: [dbName]};
+			// backup
+			if(!fs.existsSync(path.join(__dirname, "backup"))) {
+				logger.debug("Creating backup directory")
+				fs.mkdirSync(path.join(__dirname, "backup"));
+			}
+			let wrstream = fs.createWriteStream('./backup/db-backup.tar.gz');
+				wrstream.on("open", (fd) => {	cbr.backup(config, done).pipe(wrstream);
+			});
+		});
 	});
+
+
 }
 
 function cmdExit() {
