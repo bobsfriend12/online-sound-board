@@ -181,20 +181,22 @@ logger.debug("couchdb initialized.");
 //=======================================
 //=================Prompt================
 //=======================================
-//#reegion prompt
+//#region prompt
 
 function cmdHelp() {
-	console.log("Commands: \nfreeze - freeze express and prevent any api requests");
-	console.log("resume - start accepting requests again.")
+	console.log(
+		"Commands: \nfreeze - freeze express and prevent any api requests"
+	);
+	console.log("resume - start accepting requests again.");
 	console.log("backup - Backups the database locally.");
 	console.log("restore - restore from the local backup");
 	console.log("clear - clear all log messages from terminal.");
-	console.log("exit - exit the app.")
+	console.log("exit - exit the app.");
 }
 
 function cmdFreeze() {
 	frozen = true;
-	if(httpsServer === "true") {
+	if (httpsServer === "true") {
 		server.close(() => logger.warn("freezing express"));
 	} else {
 		server.close(() => logger.warn("freezing express"));
@@ -202,8 +204,8 @@ function cmdFreeze() {
 }
 
 function cmdResume() {
-	if(frozen === true) {
-		if(httpsServer === "true") {
+	if (frozen === true) {
+		if (httpsServer === "true") {
 			startServer();
 			frozen = false;
 		} else {
@@ -228,14 +230,14 @@ function cmdRestore() {
 				if (err) {
 					return logger.error(err);
 				}
-				logger.info('Restore complete');
+				logger.info("Restore complete");
 			}
-			var config = {credentials: url, databases: [dbName]};
-			fs.createReadStream('./backup/db-backup.tar.gz').pipe(cbr.restore(config, done));
+			var config = { credentials: url, databases: [dbName] };
+			fs.createReadStream("./backup/db-backup.tar.gz").pipe(
+				cbr.restore(config, done)
+			);
 		});
 	});
-	
-	
 }
 
 function cmdBackup() {
@@ -249,21 +251,20 @@ function cmdBackup() {
 				if (err) {
 					return logger.error(err);
 				}
-				logger.info('Backup complete');
+				logger.info("Backup complete");
 			}
-			var config = {credentials: url, databases: [dbName]};
+			var config = { credentials: url, databases: [dbName] };
 			// backup
-			if(!fs.existsSync(path.join(__dirname, "backup"))) {
-				logger.debug("Creating backup directory")
+			if (!fs.existsSync(path.join(__dirname, "backup"))) {
+				logger.debug("Creating backup directory");
 				fs.mkdirSync(path.join(__dirname, "backup"));
 			}
-			let wrstream = fs.createWriteStream('./backup/db-backup.tar.gz');
-				wrstream.on("open", (fd) => {	cbr.backup(config, done).pipe(wrstream);
+			let wrstream = fs.createWriteStream("./backup/db-backup.tar.gz");
+			wrstream.on("open", (fd) => {
+				cbr.backup(config, done).pipe(wrstream);
 			});
 		});
 	});
-
-
 }
 
 function cmdExit() {
@@ -278,7 +279,15 @@ function cmdClear() {
 async function commandPrompt() {
 	logger.debug("initializing command prompt");
 	myRL.init();
-	myRL.setCompletion(["help", "freeze", "backup", "exit", "clear", "restore", "resume"]);
+	myRL.setCompletion([
+		"help",
+		"freeze",
+		"backup",
+		"exit",
+		"clear",
+		"restore",
+		"resume"
+	]);
 	myRL.on("line", function (line) {
 		switch (line.trim()) {
 			case "help":
@@ -328,6 +337,14 @@ app.use(
 );
 app.use(fileUpload({ createParentPath: true }));
 app.use("/file", express.static(path.join(__dirname, "static/audio")));
+
+app.get("/", (req, res) => {
+	const ret = {
+		status: "ok",
+		message: "server online,"
+	};
+	res.json(ret);
+});
 
 //Get object
 app.get("/boards", (req, res) => {
