@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useParams, Navigate, useNavigate } from "react-router-dom";
 import { reactFormatter, ReactTabulator } from "react-tabulator";
+import ReactTooltip from "react-tooltip";
 
 import "./EditBoard.css";
 import "react-tabulator/lib/styles.css";
@@ -69,8 +70,15 @@ function EditBoard({ board }) {
 	function onToggle(name, status) {
 		if (!status) return;
 		if (name === "audio_player") {
-			settings.audioPlayer = true;
+			if (settings.audioPlayer) {
+				console.log("audio player off");
+				settings.audioPlayer = false;
+			} else if (!settings.audioPlayer) {
+				console.log("audio player on");
+				settings.audioPlayer = true;
+			}
 		}
+		console.log(settings);
 	}
 	//#endregion
 
@@ -108,6 +116,10 @@ function EditBoard({ board }) {
 	let ref;
 	let settings = {};
 
+	if (currBoard.settings !== undefined) {
+		settings = currBoard.settings;
+	}
+
 	//If the board is not found, redirect to the dashboard
 	//Have to put all the other crap before because react complains
 	//That hooks are being used conditionally
@@ -138,6 +150,7 @@ function EditBoard({ board }) {
 
 	return (
 		<div className="edit">
+			<ReactTooltip />
 			<div className="edit__top">
 				<h1 className="edit__title">{board.title}</h1>
 				<div className="edit__right">
@@ -156,8 +169,20 @@ function EditBoard({ board }) {
 						onChange={(e) => setTitle(e.target.value)}
 					/>
 					<div className="edit__setting">
-						<p className="edit__setting_label">Show Audio Player</p>
-						<Toggle name="audio_player" onToggle={onToggle} />
+						<p className="edit__setting_label">
+							Show Audio Player{" "}
+							<span
+								className="edit__setting__tooltip"
+								data-tip="If you enable this it will make it so that you can only play one side at a time."
+							>
+								&#x1F6C8;
+							</span>
+						</p>
+						<Toggle
+							name="audio_player"
+							onToggle={onToggle}
+							defaultValue={settings.audioPlayer}
+						/>
 					</div>
 				</div>
 				<div className="edit__edit_sounds_wrapper">

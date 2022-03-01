@@ -2,7 +2,7 @@ import React from "react";
 
 import "./Toggle.css";
 
-function Toggle({ name, onToggle }) {
+function Toggle({ name, onToggle, defaultValue }) {
 	function onClick() {
 		const checkbox = document.getElementById(name);
 		onToggle(name, checkbox.checked);
@@ -14,6 +14,7 @@ function Toggle({ name, onToggle }) {
 				type="checkbox"
 				name={name}
 				id={name}
+				defaultChecked={defaultValue}
 			/>
 			<div className="toggle__switch"></div>
 		</label>
