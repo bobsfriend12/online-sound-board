@@ -26,3 +26,12 @@
 .edit__edit_title {
 	margin-left: 0.5em;
 }
+
+.edit__setting {
+	display: flex;
+	width: 20em;
+}
+
+.edit__setting_label {
+	flex-grow: 1;
+}

@@ -149,6 +149,10 @@ function App() {
 						path="/edit/:boardId/:soundId"
 						element={<BaseLayout page="edit" />}
 					/>
+					<Route
+						path="/board/:boardId"
+						element={<BaseLayout page="board" />}
+					/>
 				</Routes>
 			</BrowserRouter>
 		</DatabaseContext.Provider>

@@ -8,6 +8,7 @@ import "../../blocks/Table/materialize.css";
 
 import Btn from "../../blocks/Btn/Btn";
 import Modal from "../../blocks/Modal/Modal";
+import Toggle from "../../blocks/Toggle/Toggle";
 
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
@@ -23,7 +24,7 @@ function EditBoard({ board }) {
 
 	const [showEdit, setShowEdit] = useState(false);
 	const [sound, setSound] = useState({});
-
+	//#region on... function crap
 	useEffect(() => {
 		if (board !== undefined) {
 			setTitle(board.title);
@@ -65,6 +66,14 @@ function EditBoard({ board }) {
 		}
 	}
 
+	function onToggle(name, status) {
+		if (!status) return;
+		if (name === "audio_player") {
+			settings.audioPlayer = true;
+		}
+	}
+	//#endregion
+
 	function EditBtn(props) {
 		const id = props.cell._cell.row.data.id;
 		return (
@@ -97,6 +106,7 @@ function EditBoard({ board }) {
 		movableRows: true
 	};
 	let ref;
+	let settings = {};
 
 	//If the board is not found, redirect to the dashboard
 	//Have to put all the other crap before because react complains
@@ -104,7 +114,7 @@ function EditBoard({ board }) {
 	const SaveChanges = () => {
 		let newBoard = {
 			_id: board._id,
-			_rev: board._rev,
+			_rev: board._rev
 		};
 		//See sidebar comp for details on this
 		newBoard.id = title
@@ -121,6 +131,7 @@ function EditBoard({ board }) {
 			newSounds.push(s);
 		}
 		newBoard.sounds = newSounds;
+		newBoard.settings = settings;
 		editBoard(newBoard);
 		navigate(`/dashboard/${newBoard.id}`);
 	};
@@ -135,7 +146,7 @@ function EditBoard({ board }) {
 				</div>
 			</div>
 			<div className="edit__bottom">
-				<div className="edit__edit_title_wrapper">
+				<div className="edit__edit_settings_wrapper">
 					<label htmlFor="edit_title">Title:</label>
 					<input
 						type="text"
@@ -144,6 +155,10 @@ function EditBoard({ board }) {
 						defaultValue={title}
 						onChange={(e) => setTitle(e.target.value)}
 					/>
+					<div className="edit__setting">
+						<p className="edit__setting_label">Show Audio Player</p>
+						<Toggle name="audio_player" onToggle={onToggle} />
+					</div>
 				</div>
 				<div className="edit__edit_sounds_wrapper">
 					<div className="edit__edit_sounds_top">

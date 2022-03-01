@@ -12,7 +12,16 @@ function ViewBoard({ board }) {
 			<div className="dashboard__top">
 				<h1 className="dashboard__title">{board.title}</h1>
 				<div className="dashboard__right">
-					<Btn content="Launch" />
+					<Btn
+						content={
+							<Link
+								className="dashboard__link"
+								to={`/board/${board.id}`}
+							>
+								Launch
+							</Link>
+						}
+					/>
 					<Btn
 						content={
 							<Link

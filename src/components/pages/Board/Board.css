@@ -1,0 +1,37 @@
+.board__top {
+	background: hsl(0, 0%, 91%);
+	color: var(--brand-color);
+	display: flex;
+}
+
+.board__top__right,
+.board__top__left {
+	width: 200px;
+}
+
+.board__top__btns__back,
+.board__top__btns__settings {
+	display: inline;
+	font-size: 1.5em;
+	margin: 0 0.5em;
+}
+
+.board__top__right {
+	text-align: right;
+}
+.board__top__btns__back a {
+	color: var(--brand-color);
+	text-decoration: none;
+}
+
+.board__title {
+	color: var(--brand-color);
+	font-size: 1.25em;
+	text-align: center;
+	font-family: var(--paragraph-font);
+	margin: auto;
+}
+
+.board__grid {
+	margin: 1em;
+}

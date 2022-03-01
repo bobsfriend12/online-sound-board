@@ -6,6 +6,7 @@ import "./BaseLayout.css";
 import Main from "../../pages/Main/Main";
 import Dashboard from "../../pages/Dashboard/Dashboard";
 import EditBoard from "../../pages/EditBoard/EditBoard";
+import Board from "../../pages/Board/Board";
 import NotFound from "../../pages/NotFound/NotFound";
 import Sidebar from "../Sidebar/Sidebar";
 import DatabaseContext from "../../../contexts/DatabaseContext";
@@ -33,6 +34,14 @@ function SideLayout(currBoard, page) {
 					<EditBoard board={currBoard} />
 				)}
 			</div>
+		</div>
+	);
+}
+
+function BoardLayout() {
+	return (
+		<div className="board_layout">
+			<Board />
 		</div>
 	);
 }
@@ -73,6 +82,8 @@ function BaseLayout({ page, ...props }) {
 		return SideLayout(currBoard, "dashboard");
 	} else if (page === "edit") {
 		return SideLayout(currBoard, "edit");
+	} else if (page === "board") {
+		return BoardLayout();
 	} else if (page === "notFound") {
 		return <NotFound />;
 	}
