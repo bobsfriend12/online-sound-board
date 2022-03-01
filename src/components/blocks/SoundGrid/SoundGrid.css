@@ -14,3 +14,7 @@
 	color: var(--text-white);
 	text-align: center;
 }
+
+.sound_grid__item--playing {
+	background-color: var(--brand-color-darker);
+}

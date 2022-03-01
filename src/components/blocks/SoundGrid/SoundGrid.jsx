@@ -3,10 +3,14 @@ import { useContext, useState, useEffect } from "react";
 
 import "./SoundGrid.css";
 
-function SoundBtn({ sound, onToggle }) {
+function SoundBtn({ sound, onToggle, playing }) {
 	return (
 		<p
-			className="sound_grid__item"
+			className={
+				playing[sound.id]
+					? "sound_grid__item sound_grid__item--playing"
+					: "sound_grid__item"
+			}
 			onClick={() => {
 				onToggle(sound.id);
 			}}
@@ -16,7 +20,7 @@ function SoundBtn({ sound, onToggle }) {
 	);
 }
 
-function SoundGrid({ board, onToggle, ...props }) {
+function SoundGrid({ board, onToggle, playing, ...props }) {
 	return (
 		<div className="sound_grid">
 			{board.sounds.map((sound) => {
@@ -25,6 +29,7 @@ function SoundGrid({ board, onToggle, ...props }) {
 						key={sound.id}
 						sound={sound}
 						onToggle={onToggle}
+						playing={playing}
 					/>
 				);
 			})}

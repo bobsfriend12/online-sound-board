@@ -63,7 +63,11 @@ function Board() {
 				</div>
 			</div>
 			<div className="board__grid">
-				<SoundGrid board={board} onToggle={toggleAudio} />
+				<SoundGrid
+					board={board}
+					onToggle={toggleAudio}
+					playing={playing}
+				/>
 			</div>
 			<div className="board__audio_container">
 				{/* {board.sounds.map((sound) => {
