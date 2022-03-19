@@ -71,11 +71,15 @@ function EditBoard({ board }) {
 		if (!status) return;
 		if (name === "audio_player") {
 			if (settings.audioPlayer) {
-				console.log("audio player off");
 				settings.audioPlayer = false;
 			} else if (!settings.audioPlayer) {
-				console.log("audio player on");
 				settings.audioPlayer = true;
+			}
+		} else if (name === "restart_after_stop") {
+			if (settings.restartAfterStop) {
+				settings.restartAfterStop = false;
+			} else if (!settings.restartAfterStop) {
+				settings.restartAfterStop = true;
 			}
 		}
 		console.log(settings);
@@ -182,6 +186,22 @@ function EditBoard({ board }) {
 							name="audio_player"
 							onToggle={onToggle}
 							defaultValue={settings.audioPlayer}
+						/>
+					</div>
+					<div className="edit__setting">
+						<p className="edit__setting_label">
+							Restart after stop{" "}
+							<span
+								className="edit__setting__tooltip"
+								data-tip="This makes it so that the sound restarts after you stop it. Useful if you need to play it more than once."
+							>
+								&#x1F6C8;
+							</span>
+						</p>
+						<Toggle
+							name="restart_after_stop"
+							onToggle={onToggle}
+							defaultValue={settings.restartAfterStop}
 						/>
 					</div>
 				</div>

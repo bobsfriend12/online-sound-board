@@ -9,6 +9,10 @@
 	width: 200px;
 }
 
+.board__top__btns {
+	height: 100%;
+}
+
 .board__top__btns__back,
 .board__top__btns__settings {
 	display: inline;
@@ -16,6 +20,11 @@
 	margin: 0 0.5em;
 }
 
+.board__top__btns {
+	display: inline-flex;
+	justify-content: space-between;
+	align-items: center;
+}
 .board__top__right {
 	text-align: right;
 }

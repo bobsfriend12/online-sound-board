@@ -6,7 +6,7 @@ import "./Board.css";
 
 import DatabaseContext from "../../../contexts/DatabaseContext";
 import SoundGrid from "../../blocks/SoundGrid/SoundGrid";
-import Btn from "../../blocks/Btn/Btn";
+import AudioPlayer from "../../blocks/AudioPlayer/AudioPlayer";
 
 function Board() {
 	const { dbResults } = useContext(DatabaseContext);
@@ -15,16 +15,31 @@ function Board() {
 
 	const [playing, setPlaying] = useState({});
 
-	let audios = {};
+	//Only used if audioPlayer is enabled
+	//Need it to pass to the audio player
+	//to know what the properties are.
+	const [audio, setAudio] = useState();
+
+	let settings;
+
+	if (board.settings) {
+		settings = {
+			audioPlayer: undefined,
+			restartAfterStop: undefined
+		};
+		settings = board.settings;
+		// console.log(settings);
+	}
 
 	useEffect(() => {
 		if (board) {
 			board.sounds.forEach((sound) => {
-				console.log(sound);
 				const url = `${process.env.REACT_APP_API_URL}/file/${sound.audioFile}`;
 				//I tried doing this in it's own object
 				//but it didn't work. Thats why it's in window.
 				window[sound.id] = new Audio(url);
+				window[sound.id].id = sound.id;
+				window[sound.id].title = sound.name;
 				window[sound.id].addEventListener("ended", () => {
 					setPlaying({ ...playing, [sound.id]: false });
 				});
@@ -32,33 +47,78 @@ function Board() {
 		}
 	}, []);
 
+	function startAudio(id) {
+		const playingArr = Object.keys(playing);
+
+		//For some reason if I used the stopAudio
+		//function here it wouldn't update the state.
+		//I'm not sure why. That's why I'm updating
+		//all at once.
+		let newPlaying = { ...playing };
+
+		if (settings.audioPlayer) {
+			for (let i = 0; i < playingArr.length; i++) {
+				if (playing[playingArr[i]]) {
+					const currId = playingArr[i];
+					window[currId].pause();
+
+					if (settings.restartAfterStop) {
+						window[currId].currentTime = 0;
+					}
+
+					newPlaying[currId] = false;
+				}
+			}
+		}
+
+		window[id].play();
+		newPlaying[id] = true;
+		setAudio(window[id]);
+		setPlaying(newPlaying);
+	}
+
+	function stopAudio(id) {
+		window[id].pause();
+		if (settings.restartAfterStop) {
+			window[id].currentTime = 0;
+		}
+		setPlaying({ ...playing, [id]: false });
+	}
+
 	function toggleAudio(id) {
 		console.log(id);
-		console.log(playing);
 		if (playing[id]) {
-			console.log(`${id} is playing, pausing now`);
-			window[id].pause();
-			setPlaying({ ...playing, [id]: false });
+			stopAudio(id);
 		} else if (!playing[id]) {
-			console.log(`${id} is paused, playing now`);
-			console.log(window[id]);
-			window[id].play();
-			setPlaying({ ...playing, [id]: true });
+			startAudio(id);
 		}
 	}
 
+	console.log(playing);
 	return (
 		<div className="board">
 			<div className="board__top">
 				<div className="board__top__left">
 					<p className="board__top__btns__back" title="Back">
-						<Link to={`/dashboard/${board.id}`}>&#129092;</Link>
+						<Link
+							to={`/dashboard/${board.id}`}
+							className="board__top__btns"
+						>
+							<span className="material-icons-outlined">
+								arrow_back
+							</span>
+						</Link>
 					</p>
 				</div>
 				<h1 className="board__title">{board.title}</h1>
 				<div className="board__top__right">
-					<p className="board__top__btns__settings" title="Settings">
-						&#9881;
+					<p
+						className="board__top__btns__settings board__top__btns"
+						title="Settings"
+					>
+						<span className="material-icons-outlined">
+							settings
+						</span>
 					</p>
 				</div>
 			</div>
@@ -69,17 +129,10 @@ function Board() {
 					playing={playing}
 				/>
 			</div>
-			<div className="board__audio_container">
-				{/* {board.sounds.map((sound) => {
-					return (
-						<audio
-							key={sound.id}
-							src={`${process.env.REACT_APP_API_URL}/file/${sound.audioFile}`}
-							className="board__audio"
-							controls
-						/>
-					);
-				})} */}
+			<div className="board__bottom">
+				{settings.audioPlayer && audio ? (
+					<AudioPlayer onToggle={toggleAudio} audio={audio} />
+				) : null}
 			</div>
 		</div>
 	);
