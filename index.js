@@ -365,6 +365,7 @@ app.get("/boards", (req, res) => {
 				boardObj.title = data.rows[i].value.title;
 				boardObj.numOfSounds = data.rows[i].value.numOfSounds;
 				boardObj.sounds = data.rows[i].value.sounds;
+				boardObj.settings = data.rows[i].value.settings;
 				boardObjs.push(boardObj);
 			}
 			boards.boards = boardObjs;
