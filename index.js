@@ -107,6 +107,10 @@ if (port == undefined) {
 	logger.warn("No port defined defaulting to 3000");
 	port = 3000;
 }
+if (httpsServer == undefined) {
+	logger.warn("No https server defined defaulting to true");
+	httpsServer = true;
+}
 if (dbProtocol == undefined) {
 	logger.fatal("dbProtocol is not defined");
 	logger.fatal("\nGood Bye");
