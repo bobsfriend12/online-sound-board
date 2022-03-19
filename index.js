@@ -44,6 +44,7 @@ if (process.env.DEV_MODE === "true") {
 	logFile = process.env.DEV_LOG_FILE;
 } else {
 	port = process.env.PORT;
+	httpsServer = process.env.HTTPS;
 	dbHost = process.env.DB_HOST;
 	dbPort = process.env.DB_PORT;
 	dbProtocol = process.env.DB_PROTOCOL;
