@@ -128,9 +128,12 @@ input[type="range"]:focus::-ms-fill-upper {
 	background: #ffb3bb;
 }
 
-.audio_player__volume.audio_player__volume {
-	/* width: 250px; */
+/* .audio_player__volume.audio_player__volume {
 	--before-thumb-width: 0px;
+} */
+
+.audio_player__volume.audio_player__volume::before {
+	width: calc(var(--before-thumb-width-volume) - 1px);
 }
 
 .audio_player {

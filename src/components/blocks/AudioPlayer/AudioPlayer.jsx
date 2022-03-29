@@ -42,6 +42,11 @@ function AudioPlayer({ onToggle, audio }) {
 		`${(Math.floor(audio.currentTime) / audio.duration) * 100}%`
 	);
 
+	document.documentElement.style.setProperty(
+		"--before-thumb-width-volume",
+		`${volume}%`
+	);
+
 	return (
 		<div className="audio_player">
 			<div className="audio_player__left">{audio.title}</div>
