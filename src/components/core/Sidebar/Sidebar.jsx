@@ -60,6 +60,7 @@ function Sidebar() {
 				show={show}
 				onClose={() => setShow(false)}
 				onSave={onSave}
+				boards={boards}
 			/>
 		</div>
 	);

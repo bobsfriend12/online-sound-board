@@ -239,6 +239,7 @@ function EditBoard({ board }) {
 						show={showNew}
 						onClose={() => setShowNew(false)}
 						onSave={onNewSave}
+						board={currBoard}
 					/>
 					<Modal
 						type="editSound"

@@ -2,8 +2,31 @@ import React from "react";
 
 import Btn from "../../Btn/Btn";
 
-function NewBoard({ onClose, onSave }) {
+function NewBoard({ onClose, onSave, boards }) {
 	let title;
+
+	const tryNewId = (id) => {
+		if (boards.find((board) => board.id === id)) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	const returnUniqueId = (id) => {
+		let tries = 1;
+		let isUnique = false;
+
+		while (!isUnique) {
+			if (tryNewId(id)) {
+				id = id + "-" + tries;
+				tries++;
+			} else {
+				isUnique = true;
+			}
+		}
+		return id;
+	};
 
 	function handleSave() {
 		let newBoardObj = {};
@@ -11,10 +34,13 @@ function NewBoard({ onClose, onSave }) {
 		//with nothing to prevent url conflicts
 		//Second replace changes all spaces (or any whitespace) with a
 		//a dash(-) to improve readability
-		newBoardObj.id = title
-			.replace(/[^a-zA-Z0-9 ]/g, "")
-			.replace(/ +/g, "-")
-			.toLowerCase();
+		//Third make sure it's not duplicate
+		newBoardObj.id = returnUniqueId(
+			title
+				.replace(/[^a-zA-Z0-9 ]/g, "")
+				.replace(/ +/g, "-")
+				.toLowerCase()
+		);
 		newBoardObj.title = title;
 		newBoardObj.numOfSounds = 0;
 		newBoardObj.sounds = [];

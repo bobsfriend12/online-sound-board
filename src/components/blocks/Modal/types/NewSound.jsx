@@ -2,7 +2,7 @@ import React from "react";
 
 import Btn from "../../Btn/Btn";
 
-function NewSound({ sound, onClose, onSave }) {
+function NewSound({ onClose, onSave, board }) {
 	let title, audioName, audioDuration, files;
 
 	function uuidv4() {
@@ -16,16 +16,42 @@ function NewSound({ sound, onClose, onSave }) {
 		);
 	}
 
+	const tryNewId = (id) => {
+		if (board.sounds.find((sound) => sound.id === id)) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	const returnUniqueId = (id) => {
+		let tries = 1;
+		let isUnique = false;
+
+		while (!isUnique) {
+			if (tryNewId(id)) {
+				id = id + "-" + tries;
+				tries++;
+			} else {
+				isUnique = true;
+			}
+		}
+		return id;
+	};
+
 	const uuid = uuidv4();
 
 	function handleSave() {
 		const audioExtension = audioName.split(".").pop();
 		let newSoundObj = {};
 		//See sidebar comp for details on this
-		const id = title
-			.replace(/[^a-zA-Z0-9 ]/g, "")
-			.replace(/ +/g, "-")
-			.toLowerCase();
+		const id = returnUniqueId(
+			title
+				.replace(/[^a-zA-Z0-9 ]/g, "")
+				.replace(/ +/g, "-")
+				.toLowerCase()
+		);
+
 		newSoundObj.id = id;
 		newSoundObj.name = title;
 		newSoundObj.audioFile = `${uuid}.${audioExtension}`;
