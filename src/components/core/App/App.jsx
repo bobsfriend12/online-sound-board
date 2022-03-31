@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import axios from "axios";
 
 import BaseLayout from "../BaseLayout/BaseLayout";
+import Loading from "../Loading/Loading";
 import DatabaseContext from "../../../contexts/DatabaseContext";
 
 let dbResults = {};
@@ -101,9 +102,8 @@ function App() {
 	}, []);
 	const boards = dbResults.boards;
 
-	//TODO: better loading
 	if (loading) {
-		return <div>Loading...</div>;
+		return <Loading />;
 	}
 
 	return (
@@ -153,6 +153,7 @@ function App() {
 						path="/board/:boardId"
 						element={<BaseLayout page="board" />}
 					/>
+					<Route path="/loading" element={<Loading />} />
 				</Routes>
 			</BrowserRouter>
 		</DatabaseContext.Provider>

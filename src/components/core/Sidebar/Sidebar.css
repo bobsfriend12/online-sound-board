@@ -4,6 +4,7 @@
 	display: flex;
 	flex-direction: column;
 	font-size: large;
+	position: fixed;
 }
 
 .sidebar__title {

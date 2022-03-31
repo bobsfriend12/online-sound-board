@@ -55,8 +55,6 @@ function BaseLayout({ page, ...props }) {
 	//Get the boardId from the URL
 	const { boardId } = useParams();
 
-	let navigate = useNavigate();
-
 	//Get the current board using the boardId
 	let currBoard;
 	if (boardId === undefined) {
@@ -87,7 +85,6 @@ function BaseLayout({ page, ...props }) {
 	} else if (page === "notFound") {
 		return <NotFound />;
 	}
-
 	return <div className="BaseLayout">Hello World</div>;
 }
 
