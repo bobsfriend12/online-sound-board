@@ -1,0 +1,10 @@
+.main__link {
+	color: var(--text-white);
+	text-decoration: none;
+}
+
+.main {
+	display: flex;
+	align-items: center;
+	height: 100vh;
+}
