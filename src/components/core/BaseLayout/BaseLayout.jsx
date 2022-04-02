@@ -8,6 +8,7 @@ import NotFound from "../../pages/NotFound/NotFound";
 import DatabaseContext from "../../../contexts/DatabaseContext";
 import MainLayout from "../MainLayout/MainLayout";
 import SideLayout from "../SideLayout/SideLayout";
+import NoBoards from "../../pages/NoBoards/NoBoards";
 
 let boards;
 
@@ -27,6 +28,10 @@ function BaseLayout({ page, ...props }) {
 
 	//Get the boardId from the URL
 	const { boardId } = useParams();
+
+	if (boardId === "no-boards") {
+		return <NoBoards />;
+	}
 
 	//Get the current board using the boardId
 	let currBoard;

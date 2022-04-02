@@ -1,0 +1,12 @@
+.no_boards {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	height: 100vh;
+}
+
+.no_boards__title {
+	font-size: 2rem;
+	margin: 0 auto;
+	margin-bottom: 1em;
+}

@@ -24,6 +24,33 @@ function Sidebar() {
 		navigate(`/dashboard/${newBoardObj.id}`);
 	}
 
+	if (boards.length === 0) {
+		return (
+			<div className="sidebar">
+				<div className="sidebar__top">
+					<h2 className="sidebar__title">Boards</h2>
+					<ul className="sidebar__list">
+						<li className="sidebar__item">There are no Boards</li>
+					</ul>
+				</div>
+				<div className="sidebar__bottom">
+					<Btn
+						content="Add Board"
+						extraClasses="sidebar__btn"
+						onClick={() => setShow(true)}
+					/>
+				</div>
+				<Modal
+					type="newBoard"
+					show={show}
+					onClose={() => setShow(false)}
+					onSave={onSave}
+					boards={boards}
+				/>
+			</div>
+		);
+	}
+
 	return (
 		<div className="sidebar">
 			<div className="sidebar__top">

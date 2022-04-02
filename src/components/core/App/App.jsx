@@ -106,6 +106,14 @@ function App() {
 		return <Loading />;
 	}
 
+	let boardToRedirect;
+
+	if (boards.length > 0) {
+		boardToRedirect = boards[dbResults.numOfBoards - 1].id;
+	} else {
+		boardToRedirect = "no-boards";
+	}
+
 	return (
 		<DatabaseContext.Provider value={{ dbResults, editBoard, deleteBoard }}>
 			<BrowserRouter>
@@ -119,10 +127,7 @@ function App() {
 					<Route
 						path="/dashboard"
 						element={
-							<Navigate
-								to={boards[dbResults.numOfBoards - 1].id}
-								replace={true}
-							/>
+							<Navigate to={boardToRedirect} replace={true} />
 						}
 					/>
 					<Route
@@ -133,10 +138,7 @@ function App() {
 						path="/edit"
 						element={
 							<Navigate
-								to={
-									"/dashboard/" +
-									boards[dbResults.numOfBoards - 1].id
-								}
+								to={"/dashboard/" + boardToRedirect}
 								replace={true}
 							/>
 						}
