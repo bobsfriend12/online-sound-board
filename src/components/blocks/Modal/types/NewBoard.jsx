@@ -44,7 +44,6 @@ function NewBoard({ onClose, onSave, boards }) {
 		newBoardObj.title = title;
 		newBoardObj.numOfSounds = 0;
 		newBoardObj.sounds = [];
-		console.log(newBoardObj);
 		onSave(newBoardObj);
 	}
 

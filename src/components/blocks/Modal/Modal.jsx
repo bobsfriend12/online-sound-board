@@ -34,7 +34,6 @@ function Modal({
 			/>
 		);
 	} else {
-		console.log("No modal type");
 		return null;
 	}
 }

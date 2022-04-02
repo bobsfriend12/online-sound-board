@@ -28,7 +28,6 @@ function Board() {
 			restartAfterStop: undefined
 		};
 		settings = board.settings;
-		// console.log(settings);
 	}
 
 	useEffect(() => {
@@ -89,7 +88,6 @@ function Board() {
 	}
 
 	function toggleAudio(id) {
-		console.log(id);
 		if (playing[id]) {
 			stopAudio(id);
 		} else if (!playing[id]) {
@@ -97,7 +95,6 @@ function Board() {
 		}
 	}
 
-	console.log(playing);
 	return (
 		<div className="board">
 			<div className="board__top">

@@ -13,7 +13,6 @@ function Sidebar() {
 	const context = useContext(DatabaseContext);
 	const { dbResults, editBoard } = context;
 	const boards = dbResults.boards;
-	console.log(boards);
 	const { boardId } = useParams();
 
 	let navigate = useNavigate();

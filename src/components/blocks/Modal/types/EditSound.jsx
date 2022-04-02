@@ -12,7 +12,6 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 		files;
 
 	function handleSave() {
-		console.log("saving");
 		setNoAudio(false);
 		setNoTitle(false);
 		if (audioName && title !== "") {
@@ -37,7 +36,6 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 				method: "POST",
 				body: formData
 			});
-			console.log(newSoundObj);
 			onSave(newSoundObj);
 			setSaving(false);
 		} else if (!audioName && title !== "") {
@@ -47,7 +45,6 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
 			newSoundObj.name = title;
 			newSoundObj.audioFile = sound.audioFile;
 			newSoundObj.duration = sound.duration;
-			console.log(newSoundObj);
 			onSave(newSoundObj);
 		} else if (!audioName && title === "") {
 			setNoAudio(true);

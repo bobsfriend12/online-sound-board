@@ -11,7 +11,6 @@ function AudioPlayer({ onToggle, audio }) {
 
 	useEffect(() => {
 		audio.addEventListener("timeupdate", () => {
-			// console.log(audio.currentTime);
 			setCurrentTime(audio.currentTime);
 		});
 	}, [audio]);

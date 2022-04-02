@@ -82,7 +82,6 @@ function EditBoard({ board }) {
 				settings.restartAfterStop = true;
 			}
 		}
-		console.log(settings);
 	}
 	//#endregion
 

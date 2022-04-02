@@ -11,7 +11,6 @@ function App() {
 	const [loading, setLoading] = useState(true);
 
 	const editBoard = (newBoard) => {
-		console.log("UPDATE BOARD: ", newBoard);
 		let newIndex;
 		const newBoardIndex = dbResults.boards.findIndex(
 			(i) => i.id === newBoard.id
@@ -35,8 +34,7 @@ function App() {
 				},
 				body: JSON.stringify(newBoard)
 			})
-				.then((res) => {
-					console.log(res);
+				.then(() => {
 					// reloadDb();
 				})
 				.catch((err) => {
@@ -51,9 +49,7 @@ function App() {
 				},
 				body: JSON.stringify(newBoard)
 			})
-				.then((res) => {
-					console.log(res);
-				})
+				.then(() => {})
 				.catch((err) => {
 					console.log(err);
 				});
@@ -61,8 +57,6 @@ function App() {
 	};
 
 	const deleteBoard = (board) => {
-		console.log("DELETE BOARD: ", board);
-
 		let boards = dbResults.boards;
 
 		boards.splice(boards.indexOf(board), 1);
@@ -76,8 +70,7 @@ function App() {
 			},
 			body: JSON.stringify(board)
 		})
-			.then((res) => {
-				console.log(res);
+			.then(() => {
 				window.location.reload();
 			})
 			.catch((err) => {
