@@ -45,7 +45,10 @@ function Board() {
 				});
 			});
 		}
-	}, []);
+		//React is telling me to include playing in this dependency array
+		//but that is a very bad idea and defeats the purpose of this effect
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [board]);
 
 	function startAudio(id) {
 		const playingArr = Object.keys(playing);

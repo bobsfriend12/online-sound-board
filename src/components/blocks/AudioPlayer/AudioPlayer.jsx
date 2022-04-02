@@ -34,8 +34,8 @@ function AudioPlayer({ onToggle, audio }) {
 		setMuted(!muted);
 	};
 
-	let bufferedTime = audio.buffered.end(audio.buffered.length - 1);
-	let seekableAmount = audio.seekable.end(audio.seekable.length - 1);
+	// let bufferedTime = audio.buffered.end(audio.buffered.length - 1);
+	// let seekableAmount = audio.seekable.end(audio.seekable.length - 1);
 
 	document.documentElement.style.setProperty(
 		"--before-thumb-width",

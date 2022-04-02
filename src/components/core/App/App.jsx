@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import axios from "axios";
-
 import BaseLayout from "../BaseLayout/BaseLayout";
 import Loading from "../Loading/Loading";
 import DatabaseContext from "../../../contexts/DatabaseContext";
@@ -80,6 +78,7 @@ function App() {
 		})
 			.then((res) => {
 				console.log(res);
+				window.location.reload();
 			})
 			.catch((err) => {
 				console.log(err);
@@ -96,7 +95,8 @@ function App() {
 				});
 			})
 			.catch((err) => {
-				const ers = JSON.stringify(err);
+				//TODO: Handle error
+				// const ers = JSON.stringify(err);
 				setLoading(false);
 			});
 	}, []);

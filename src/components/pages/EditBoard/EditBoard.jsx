@@ -30,7 +30,7 @@ function EditBoard({ board }) {
 		if (board !== undefined) {
 			setTitle(board.title);
 		}
-	}, []);
+	}, [board]);
 
 	let navigate = useNavigate();
 	if (board === undefined) {
@@ -87,7 +87,6 @@ function EditBoard({ board }) {
 	//#endregion
 
 	function EditBtn(props) {
-		const id = props.cell._cell.row.data.id;
 		return (
 			<Btn
 				content="Edit"
@@ -117,7 +116,6 @@ function EditBoard({ board }) {
 		debugInvalidOptions: false,
 		movableRows: true
 	};
-	let ref;
 	let settings = {};
 
 	if (currBoard.settings !== undefined) {
@@ -223,11 +221,9 @@ function EditBoard({ board }) {
 					/> */}
 					<ReactTabulator
 						ref={(r) => {
-							ref = r;
-							let hi;
 							setRows !== undefined && r !== null
 								? setRows(r)
-								: (hi = null);
+								: (r = null);
 						}}
 						data={sounds}
 						columns={columns}

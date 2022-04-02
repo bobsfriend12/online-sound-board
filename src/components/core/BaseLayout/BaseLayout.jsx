@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 
 import "./BaseLayout.css";
 

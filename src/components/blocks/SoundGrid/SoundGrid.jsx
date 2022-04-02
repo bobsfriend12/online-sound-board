@@ -1,5 +1,4 @@
 import React from "react";
-import { useContext, useState, useEffect } from "react";
 
 import "./SoundGrid.css";
 
