@@ -79,19 +79,10 @@ function Table({ edit, setRows, sounds, setSounds }) {
 			debugInvalidOptions: false
 		};
 	}
-	let ref;
 	//#endregion
 	return (
 		<>
 			<ReactTabulator
-				ref={(r) => {
-					ref = r;
-					console.log(r);
-					let hi;
-					setRows !== undefined && r !== null
-						? setRows(r)
-						: (hi = ref);
-				}}
 				data={sounds}
 				columns={columns}
 				layout={"fitColumns"}

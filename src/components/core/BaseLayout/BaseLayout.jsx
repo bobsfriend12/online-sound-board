@@ -1,42 +1,16 @@
 import React, { useContext } from "react";
-import { useParams, useNavigate, Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 
 import "./BaseLayout.css";
 
-import Main from "../../pages/Main/Main";
-import Dashboard from "../../pages/Dashboard/Dashboard";
-import EditBoard from "../../pages/EditBoard/EditBoard";
 import Board from "../../pages/Board/Board";
 import NotFound from "../../pages/NotFound/NotFound";
-import Sidebar from "../Sidebar/Sidebar";
 import DatabaseContext from "../../../contexts/DatabaseContext";
+import MainLayout from "../MainLayout/MainLayout";
+import SideLayout from "../SideLayout/SideLayout";
+import NoBoards from "../../pages/NoBoards/NoBoards";
 
 let boards;
-
-function mainLayout() {
-	return (
-		<div className="main_layout">
-			<Main />
-		</div>
-	);
-}
-
-function SideLayout(currBoard, page) {
-	return (
-		<div className="side_layout">
-			<div className="side_layout__sidebar">
-				<Sidebar />
-			</div>
-			<div className="side_layout__main">
-				{page === "dashboard" ? (
-					<Dashboard board={currBoard} />
-				) : (
-					<EditBoard board={currBoard} />
-				)}
-			</div>
-		</div>
-	);
-}
 
 function BoardLayout() {
 	return (
@@ -55,7 +29,9 @@ function BaseLayout({ page, ...props }) {
 	//Get the boardId from the URL
 	const { boardId } = useParams();
 
-	let navigate = useNavigate();
+	if (boardId === "no-boards") {
+		return <NoBoards />;
+	}
 
 	//Get the current board using the boardId
 	let currBoard;
@@ -76,8 +52,7 @@ function BaseLayout({ page, ...props }) {
 	}
 	//Render the current board into the page
 	if (page === "main") {
-		// return <Main {...props} />;
-		return mainLayout();
+		return MainLayout();
 	} else if (page === "dashboard") {
 		return SideLayout(currBoard, "dashboard");
 	} else if (page === "edit") {
@@ -87,7 +62,6 @@ function BaseLayout({ page, ...props }) {
 	} else if (page === "notFound") {
 		return <NotFound />;
 	}
-
 	return <div className="BaseLayout">Hello World</div>;
 }
 

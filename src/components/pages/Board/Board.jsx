@@ -28,7 +28,6 @@ function Board() {
 			restartAfterStop: undefined
 		};
 		settings = board.settings;
-		// console.log(settings);
 	}
 
 	useEffect(() => {
@@ -45,7 +44,10 @@ function Board() {
 				});
 			});
 		}
-	}, []);
+		//React is telling me to include playing in this dependency array
+		//but that is a very bad idea and defeats the purpose of this effect
+		//eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [board]);
 
 	function startAudio(id) {
 		const playingArr = Object.keys(playing);
@@ -86,7 +88,6 @@ function Board() {
 	}
 
 	function toggleAudio(id) {
-		console.log(id);
 		if (playing[id]) {
 			stopAudio(id);
 		} else if (!playing[id]) {
@@ -94,7 +95,6 @@ function Board() {
 		}
 	}
 
-	console.log(playing);
 	return (
 		<div className="board">
 			<div className="board__top">

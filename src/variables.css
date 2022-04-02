@@ -2,9 +2,9 @@
 *::before,
 *::after {
 	/* Colors */
-	--brand-color: #b30015;
+	--brand-color: hsl(353, 100%, 35%);
 	--brand-color-light: hsl(353, 100%, 55%);
-	--brand-color-lighter: #ff808e;
+	--brand-color-lighter: hsl(353, 100%, 75%);
 	--brand-color-darker: hsl(353, 100%, 25%);
 
 	--bg-white: hsl(0, 0%, 100%);
