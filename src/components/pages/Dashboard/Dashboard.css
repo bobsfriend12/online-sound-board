@@ -1,7 +1,9 @@
 .dashboard {
 	padding: 0.5em 0 0 0;
 	max-height: 100vh;
-	overflow-y: scroll;
+	/* overflow-y: scroll; */
+	isolation: isolate;
+	z-index: 1;
 }
 
 .dashboard__top,
@@ -18,4 +20,8 @@
 .dashboard__link {
 	color: var(--text-dark-bg);
 	text-decoration: none;
+}
+
+.dashboard__bottom {
+	z-index: 2;
 }

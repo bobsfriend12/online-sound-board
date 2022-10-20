@@ -1,7 +1,7 @@
 .spinner {
 	--spinner-size: 5em;
 	--spinner-border-width: 0.45em;
-	--spinner-color: 353 100% 35%;
+	--spinner-color: 241 100% 20%;
 	--spinner-speed: 0.6s;
 
 	position: absolute;
