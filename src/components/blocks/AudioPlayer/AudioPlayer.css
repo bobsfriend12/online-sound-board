@@ -43,7 +43,7 @@ input[type="range"]:focus {
 	outline: none;
 }
 input[type="range"]::-webkit-slider-runnable-track {
-	background: #ff808e;
+	background: hsl(241, 100%, 85%);
 	border: 0;
 	border-radius: 11px;
 	width: 100%;
@@ -57,7 +57,7 @@ input[type="range"]::-webkit-slider-thumb {
 	height: 18px;
 	/* background: rgba(255, 255, 255, 1); */
 	background: var(--brand-color);
-	border: 5px solid #b30015;
+	border: 5px solid var(--brand-color);
 	border-radius: 50%;
 	cursor: pointer;
 	-webkit-appearance: none;
@@ -74,10 +74,10 @@ input[type="range"]::before {
 	opacity: 1;
 }
 input[type="range"]:focus::-webkit-slider-runnable-track {
-	background: #ffb3bb;
+	background: hsl(241, 100%, 85%);
 }
 input[type="range"]::-moz-range-track {
-	background: #ff808e;
+	background: var(--brand-color-lighter);
 	border: 0;
 	border-radius: 11px;
 	width: 100%;
@@ -88,7 +88,7 @@ input[type="range"]::-moz-range-thumb {
 	width: 23px;
 	height: 23px;
 	background: rgba(255, 255, 255, 0.1);
-	border: 3.5px solid #b30015;
+	border: 3.5px solid var(--brand-color);
 	border-radius: 50px;
 	cursor: pointer;
 }
@@ -102,12 +102,12 @@ input[type="range"]::-ms-track {
 	cursor: pointer;
 }
 input[type="range"]::-ms-fill-lower {
-	background: #ff4d61;
+	background: hsl(241, 100%, 50%);
 	border: 0;
 	border-radius: 22px;
 }
 input[type="range"]::-ms-fill-upper {
-	background: #ff808e;
+	background: var(--brand-color-lighter);
 	border: 0;
 	border-radius: 22px;
 }
@@ -115,17 +115,17 @@ input[type="range"]::-ms-thumb {
 	width: 23px;
 	height: 23px;
 	background: rgba(255, 255, 255, 0.1);
-	border: 3.5px solid #b30015;
+	border: 3.5px solid var(--brand-color);
 	border-radius: 50px;
 	cursor: pointer;
 	margin-top: 0px;
 	/*Needed to keep the Edge thumb centred*/
 }
 input[type="range"]:focus::-ms-fill-lower {
-	background: #ff808e;
+	background: var(--brand-color-lighter);
 }
 input[type="range"]:focus::-ms-fill-upper {
-	background: #ffb3bb;
+	background: hsl(241, 100%, 85%);
 }
 
 /* .audio_player__volume.audio_player__volume {

@@ -10,6 +10,7 @@
 	-ms-transform: translatez(0);
 	-o-transform: translatez(0);
 	transform: translatez(0);
+	z-index: 1;
 }
 
 .tabulator[tabulator-layout="fitDataFill"]

@@ -151,7 +151,7 @@ function EditBoard({ board }) {
 
 	return (
 		<div className="edit">
-			<ReactTooltip />
+			<ReactTooltip className="edit__tooltip" />
 			<div className="edit__top">
 				<h1 className="edit__title">{board.title}</h1>
 				<div className="edit__right">

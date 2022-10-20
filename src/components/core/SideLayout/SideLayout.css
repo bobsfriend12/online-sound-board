@@ -12,6 +12,7 @@
 	flex-grow: 2;
 	flex-shrink: 1;
 	max-width: 250px;
+	z-index: 1;
 }
 
 .side_layout__title {
@@ -23,4 +24,6 @@
 	/* flex-basis: 75%; */
 	flex-grow: 1;
 	flex-shrink: 2;
+	overflow-y: scroll;
+	z-index: 1;
 }

@@ -2,7 +2,7 @@
 	margin: auto;
 
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(min-content, 300px));
+	grid-template-columns: repeat(auto-fill, minmax(min-content, 250px));
 	gap: 1em;
 	align-items: center;
 	justify-content: center;

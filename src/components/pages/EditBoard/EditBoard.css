@@ -40,3 +40,7 @@
 .edit__setting__tooltip {
 	color: var(--brand-color);
 }
+
+.edit__tooltip {
+	max-width: 50ch !important;
+}
