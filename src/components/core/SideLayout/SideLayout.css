@@ -1,0 +1,29 @@
+/* Sidebar Layout */
+.side_layout {
+	display: flex;
+	flex-direction: row;
+	height: 100vh;
+	width: 100%;
+	gap: 1em;
+}
+
+.side_layout__sidebar {
+	/* flex-basis: 25%; */
+	flex-grow: 2;
+	flex-shrink: 1;
+	max-width: 250px;
+	z-index: 1;
+}
+
+.side_layout__title {
+	color: var(--text-dark-bg);
+	margin: 0.5rem 0 0 0;
+}
+
+.side_layout__main {
+	/* flex-basis: 75%; */
+	flex-grow: 1;
+	flex-shrink: 2;
+	overflow-y: scroll;
+	z-index: 1;
+}

@@ -1,0 +1,35 @@
+.spinner {
+	--spinner-size: 5em;
+	--spinner-border-width: 0.45em;
+	--spinner-color: 241 100% 20%;
+	--spinner-speed: 0.6s;
+
+	position: absolute;
+	top: calc(50% - var(--spinner-size));
+	left: calc(50% - var(--spinner-size));
+	display: block;
+	height: var(--spinner-size);
+	width: var(--spinner-size);
+	border: var(--spinner-border-width) solid hsl(var(--spinner-color) / 0.25);
+	border-top: var(--spinner-border-width) solid hsl(var(--spinner-color));
+	border-radius: 100%;
+	animation: spin var(--spinner-speed) infinite linear;
+}
+
+@-webkit-keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}

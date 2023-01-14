@@ -1,0 +1,27 @@
+.dashboard {
+	padding: 0.5em 0 0 0;
+	max-height: 100vh;
+	/* overflow-y: scroll; */
+	isolation: isolate;
+	z-index: 1;
+}
+
+.dashboard__top,
+.dashboard__right {
+	display: flex;
+}
+
+.dashboard__right {
+	margin-left: auto;
+	margin-right: 1em;
+	gap: 1em;
+}
+
+.dashboard__link {
+	color: var(--text-dark-bg);
+	text-decoration: none;
+}
+
+.dashboard__bottom {
+	z-index: 2;
+}

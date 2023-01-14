@@ -1,0 +1,44 @@
+.sidebar {
+	background-color: var(--bg-white);
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	font-size: large;
+	position: sticky;
+}
+
+.sidebar__title {
+	font-size: 1.5em;
+	font-weight: bold;
+	color: var(--text-dark-bg);
+	margin: 1rem 0 0 1rem;
+}
+
+.sidebar__list {
+	list-style: none;
+	padding: 0;
+	margin: 0.75rem 1rem;
+}
+
+.sidebar__item {
+	margin: 0.25em 0;
+}
+
+.sidebar__item a {
+	text-decoration: none;
+	color: var(--text-light-bg);
+}
+
+.sidebar__item a:hover {
+	color: var(--brand-color);
+}
+
+.sidebar__item--selected a {
+	color: var(--brand-color);
+	font-weight: bold;
+	text-decoration: none;
+}
+
+.sidebar__bottom {
+	margin: auto 0 1em 0;
+}
