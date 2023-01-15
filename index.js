@@ -183,7 +183,7 @@ const startServer = () => {
     },
     app
   );
-  server.listen(port, () => {
+  server.listen(port, "0.0.0.0", () => {
     logger.info(`Started https server on ${port}`);
   });
 };
@@ -197,7 +197,7 @@ if (httpsServer === "true") {
     commandPrompt();
   }
 } else {
-  var server = app.listen(port, () => {
+  var server = app.listen(port, "0.0.0.0", () => {
     logger.info(`Started http server on ${port}`);
     commandPrompt();
   });
