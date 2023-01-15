@@ -1,16 +1,16 @@
 .tabulator {
-  position: relative;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #fff;
-  font-size: 16px;
-  text-align: left;
-  overflow: hidden;
-  -webkit-transform: translatez(0);
-  -moz-transform: translatez(0);
-  -ms-transform: translatez(0);
-  -o-transform: translatez(0);
-  transform: translatez(0);
-  z-index: 1;
+	position: relative;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	background-color: #fff;
+	font-size: 16px;
+	text-align: left;
+	overflow: hidden;
+	-webkit-transform: translatez(0);
+	-moz-transform: translatez(0);
+	-ms-transform: translatez(0);
+	-o-transform: translatez(0);
+	transform: translatez(0);
+	z-index: 1;
 }
 
 .tabulator[tabulator-layout="fitDataFill"]
