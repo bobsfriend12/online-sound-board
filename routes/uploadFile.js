@@ -1,6 +1,7 @@
 const logger = require("../logger").logger;
 
 module.exports = function uploadFileRoute(app) {
+  //TODO: make sure its an audio file
   app.post("/upload", (req, res) => {
     logger.info("Uploading file from " + req.ip);
 
