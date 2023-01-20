@@ -1,0 +1,19 @@
+.login {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+
+.login__google {
+  padding: 1em;
+  border: 3px solid var(--brand-color);
+  border-radius: 5em;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  cursor: pointer;
+  background: white;
+}
+
+.login__google:hover {
+  background-color: var(--brand-color);
+  color: var(--bg-white);
+}
