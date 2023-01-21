@@ -18,7 +18,6 @@ function Board() {
   const [_playing, _setPlaying] = useState({});
   const playingRef = useRef(_playing);
   const playing = playingRef.current;
-  console.log(playingRef);
 
   const setPlaying = (data) => {
     playingRef.current = data;
@@ -81,7 +80,6 @@ function Board() {
   }, [board]);
 
   function startAudio(id) {
-    console.log(`starting ${id}`);
     const playingArr = Object.keys(playing);
 
     //For some reason if I used the stopAudio
@@ -112,8 +110,6 @@ function Board() {
   }
 
   function stopAudio(id) {
-    console.log(`stopping ${id}...`);
-
     const newPlaying = playingRef.current;
     window[id].pause();
 
@@ -127,14 +123,12 @@ function Board() {
     const playingAudio = Object.keys(newPlaying).find(
       (o) => newPlaying[o] === true
     );
-    console.log(newPlaying);
-    console.log(playingAudio);
+
     setPlaying(newPlaying);
     setAudio(window[playingAudio]);
   }
 
   function pauseAudio(id) {
-    console.log(`pausing ${id}...`);
     window[id].pause();
     const newPlaying = playingRef.current;
     newPlaying[id] = false;
@@ -162,16 +156,13 @@ function Board() {
     //stop the currently playing audio when spacebar is pressed
     if (e.code === "Space" && audioRef.current) {
       const audioId = audioRef.current.id;
-      console.log(audioRef.current.id);
-      console.log(playingRef.current[audioId]);
+
       toggleAudio(audioId);
     }
   }
 
-  console.log(playing);
-
   return (
-    <div className="board" onKeyDown={() => console.log("pausing")}>
+    <div className="board">
       <div className="board__top">
         <div className="board__top__left">
           <p className="board__top__btns__back" title="Back">
