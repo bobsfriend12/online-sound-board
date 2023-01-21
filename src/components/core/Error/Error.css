@@ -1,0 +1,22 @@
+.error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* max-width: 50ch; */
+  height: 100vh;
+  width: 100vw;
+  text-align: center;
+}
+
+.error__title {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.error__descrip {
+  font-size: 1.2em;
+  margin-bottom: 1em;
+  max-width: 75ch;
+}

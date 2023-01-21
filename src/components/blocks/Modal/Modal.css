@@ -45,11 +45,12 @@
   font-weight: bold;
   color: rgb(219, 45, 45);
 }
-.input_wrapper {
+.input_wrapper,
+.toggle_wrapper {
   margin-bottom: 0.55em;
 }
 
-.loop_wrapper {
+.toggle_wrapper {
   display: flex;
   gap: 1em;
 }
