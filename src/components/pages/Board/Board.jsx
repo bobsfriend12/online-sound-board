@@ -1,5 +1,5 @@
 import React from "react";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 
 import "./Board.css";
@@ -13,12 +13,28 @@ function Board() {
   const { boardId } = useParams();
   const board = dbResults.boards.find((o) => o.id === boardId);
 
-  const [playing, setPlaying] = useState({});
+  //We need the refs here so that we can get
+  //updated values in the useEffect event listeners.
+  const [_playing, _setPlaying] = useState({});
+  const playingRef = useRef(_playing);
+  const playing = playingRef.current;
+  console.log(playingRef);
+
+  const setPlaying = (data) => {
+    playingRef.current = data;
+    _setPlaying(data);
+  };
 
   //Only used if audioPlayer is enabled
   //Need it to pass to the audio player
   //to know what the properties are.
-  const [audio, setAudio] = useState();
+  const [_audio, _setAudio] = useState();
+  const audioRef = useRef(_audio);
+  const audio = audioRef.current;
+  const setAudio = (data) => {
+    audioRef.current = data;
+    _setAudio(data);
+  };
 
   let settings;
 
@@ -40,18 +56,32 @@ function Board() {
         window[sound.id].id = sound.id;
         window[sound.id].title = sound.name;
         window[sound.id].addEventListener("ended", () => {
-          setPlaying({ ...playing, [sound.id]: false });
+          // setPlaying({ ...playingRef.current, [sound.id]: false });
+          stopAudio(sound.id);
         });
 
         window[sound.id].loop = sound.loop;
       });
     }
+    document.addEventListener("keyup", handleKeyDown);
+
+    return () => {
+      if (board) {
+        board.sounds.forEach((sound) => {
+          window[sound.id].removeEventListener("ended", () => {
+            stopAudio(sound.id);
+          });
+        });
+      }
+      document.removeEventListener("keydown", () => {});
+    };
     //React is telling me to include playing in this dependency array
     //but that is a very bad idea and defeats the purpose of this effect
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board]);
 
   function startAudio(id) {
+    console.log(`starting ${id}`);
     const playingArr = Object.keys(playing);
 
     //For some reason if I used the stopAudio
@@ -60,7 +90,7 @@ function Board() {
     //all at once.
     let newPlaying = { ...playing };
 
-    if (settings.audioPlayer) {
+    if (settings.audioPlayer && !settings.multipleAtATime) {
       for (let i = 0; i < playingArr.length; i++) {
         if (playing[playingArr[i]]) {
           const currId = playingArr[i];
@@ -82,23 +112,66 @@ function Board() {
   }
 
   function stopAudio(id) {
+    console.log(`stopping ${id}...`);
+
+    const newPlaying = playingRef.current;
     window[id].pause();
-    if (settings.restartAfterStop) {
+
+    const sound = board.sounds.find((o) => o.id === id);
+    const restart = sound.override ? sound.restart : settings.restartAfterStop;
+    if (restart) {
       window[id].currentTime = 0;
     }
-    setPlaying({ ...playing, [id]: false });
+
+    newPlaying[id] = false;
+    const playingAudio = Object.keys(newPlaying).find(
+      (o) => newPlaying[o] === true
+    );
+    console.log(newPlaying);
+    console.log(playingAudio);
+    setPlaying(newPlaying);
+    setAudio(window[playingAudio]);
+  }
+
+  function pauseAudio(id) {
+    console.log(`pausing ${id}...`);
+    window[id].pause();
+    const newPlaying = playingRef.current;
+    newPlaying[id] = false;
+    setPlaying(newPlaying);
   }
 
   function toggleAudio(id) {
-    if (playing[id]) {
+    const sound = board.sounds.find((o) => o.id === id);
+    const restart = sound.override ? sound.restart : settings.restartAfterStop;
+
+    if (playingRef.current[id] && restart) {
       stopAudio(id);
-    } else if (!playing[id]) {
+    } else if (playingRef.current[id]) {
+      pauseAudio(id);
+    } else if (!playingRef.current[id]) {
       startAudio(id);
     }
   }
 
+  function showAudio(id) {
+    setAudio(window[id]);
+  }
+
+  function handleKeyDown(e) {
+    //stop the currently playing audio when spacebar is pressed
+    if (e.code === "Space" && audioRef.current) {
+      const audioId = audioRef.current.id;
+      console.log(audioRef.current.id);
+      console.log(playingRef.current[audioId]);
+      toggleAudio(audioId);
+    }
+  }
+
+  console.log(playing);
+
   return (
-    <div className="board">
+    <div className="board" onKeyDown={() => console.log("pausing")}>
       <div className="board__top">
         <div className="board__top__left">
           <p className="board__top__btns__back" title="Back">
@@ -118,7 +191,12 @@ function Board() {
         </div>
       </div>
       <div className="board__grid">
-        <SoundGrid board={board} onToggle={toggleAudio} playing={playing} />
+        <SoundGrid
+          board={board}
+          onToggle={toggleAudio}
+          showAudio={showAudio}
+          playing={playing}
+        />
       </div>
       <div className="board__bottom">
         {settings.audioPlayer && audio ? (
