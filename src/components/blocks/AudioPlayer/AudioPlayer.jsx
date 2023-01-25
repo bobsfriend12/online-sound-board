@@ -24,6 +24,7 @@ function AudioPlayer({ onToggle, audio }) {
     _setVolume(inputVolume);
   };
 
+
   const calculateTime = (secs) => {
     const minutes = Math.floor(secs / 60);
     const seconds = Math.floor(secs % 60);
