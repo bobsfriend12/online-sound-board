@@ -5,7 +5,7 @@ import "./AudioPlayer.css";
 
 function AudioPlayer({ onToggle, audio }) {
   const [currentTime, setCurrentTime] = useState(0);
-  const [volume, setVolume] = useState(100);
+  const [volume, _setVolume] = useState(100);
   const [muted, setMuted] = useState(false);
   const [volumeBeforeMute, setVolumeBeforeMute] = useState(0);
 
@@ -19,7 +19,11 @@ function AudioPlayer({ onToggle, audio }) {
       });
   }, [audio]);
 
-  audio.volume = volume / 100;
+  const setVolume = (inputVolume) => {
+    audio.volume = inputVolume / 100;
+    _setVolume(inputVolume);
+  };
+
 
   const calculateTime = (secs) => {
     const minutes = Math.floor(secs / 60);
