@@ -8,6 +8,10 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
   const [noTitle, setNoTitle] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loop, setLoop] = useState(sound.loop ? sound.loop : false);
+  const [overrideDefault, setOverrideDefault] = useState(
+    sound.override ? sound.override : false
+  );
+  const [restart, setRestart] = useState(sound.restart ? sound.restart : false);
   let title = sound.name,
     audioName,
     audioDuration,
@@ -29,6 +33,8 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
       newSoundObj.audioFile = `${uuid}.${audioExtension}`;
       newSoundObj.duration = audioDuration;
       newSoundObj.loop = loop;
+      newSoundObj.override = overrideDefault ? overrideDefault : false;
+      newSoundObj.restart = restart ? restart : false;
 
       const formData = new FormData();
       formData.append("audio", files[0]);
@@ -49,6 +55,8 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
       newSoundObj.audioFile = sound.audioFile;
       newSoundObj.duration = sound.duration;
       newSoundObj.loop = loop;
+      newSoundObj.override = overrideDefault ? overrideDefault : false;
+      newSoundObj.restart = restart ? restart : false;
       onSave(newSoundObj);
     } else if (!audioName && title === "") {
       setNoAudio(true);
@@ -97,6 +105,10 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
     if (!status) return;
     if (name === "loop") {
       setLoop(!loop);
+    } else if (name === "override") {
+      setOverrideDefault(!overrideDefault);
+    } else if (name === "restart") {
+      setRestart(!restart);
     }
   }
 
@@ -174,11 +186,27 @@ function EditSound({ sound, onClose, onSave, onDelete }) {
                 />
               </audio>
             </div>
-            <div className="loop_wrapper input_wrapper">
+            <div className="loop_wrapper toggle_wrapper">
               Loop:{" "}
               <Toggle
                 name="loop"
                 defaultValue={sound.loop}
+                onToggle={onToggle}
+              />
+            </div>
+            <div className="override_wrapper toggle_wrapper">
+              Override Defaults:{" "}
+              <Toggle
+                name="override"
+                defaultValue={sound.override}
+                onToggle={onToggle}
+              />
+            </div>
+            <div className="restart_wrapper toggle_wrapper">
+              Restart After Stop:{" "}
+              <Toggle
+                name="restart"
+                defaultValue={sound.restart}
                 onToggle={onToggle}
               />
             </div>
